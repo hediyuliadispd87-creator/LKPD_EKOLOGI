@@ -1451,6 +1451,25 @@
   </div>
 
   <!-- TOMBOL AKSI -->
+  <!-- KIRIM KE GURU -->
+  <div style="background:white; border-radius:20px; padding:24px 28px; margin-bottom:24px; box-shadow:0 4px 20px rgba(0,0,0,0.12); border-top:5px solid #1565c0;">
+    <h2 style="font-family:'Merriweather',serif; font-size:1.1rem; color:#1565c0; margin-bottom:6px;">📡 Kirim Progres ke Guru</h2>
+    <p style="font-size:0.85rem; color:#546e7a; margin-bottom:16px; line-height:1.6;">Masukkan <strong>Kode Sesi</strong> yang diberikan guru, lalu klik <strong>Kirim</strong>. Guru dapat memantau progres kelompokmu secara langsung dari dashboard.</p>
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1; min-width:160px;">
+        <label style="font-size:0.78rem; font-weight:700; color:#546e7a; text-transform:uppercase; letter-spacing:0.5px;">Kode Sesi Guru</label>
+        <input type="text" id="kodeGuru" maxlength="8" placeholder="Contoh: IPA7A01"
+          style="padding:11px 14px; border:2px solid #90caf9; border-radius:10px; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; outline:none; color:#1565c0; transition:border-color 0.2s;"
+          oninput="this.value=this.value.toUpperCase()">
+      </div>
+      <button onclick="kirimKeGuru()" style="display:inline-flex; align-items:center; gap:10px; padding:12px 26px; background:linear-gradient(135deg,#1565c0,#1976d2); color:white; border:none; border-radius:50px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 16px rgba(21,101,192,0.35); transition:all 0.2s;">
+        📡 Kirim Sekarang
+      </button>
+    </div>
+    <div id="statusKirim" style="display:none; margin-top:14px; padding:10px 16px; border-radius:10px; font-size:0.85rem; font-weight:700;"></div>
+    <p style="font-size:0.75rem; color:#90a4ae; margin-top:12px;">⏱ Progres juga dikirim otomatis setiap 2 menit setelah kode diisi.</p>
+  </div>
+
   <div class="btn-group">
     <button class="btn btn-simpan" onclick="simpanData()">💾 Simpan Jawaban</button>
     <button class="btn btn-pdf" onclick="downloadPDF()">📄 Download PDF</button>
@@ -1979,10 +1998,103 @@ function cobaEmbed() {
   document.getElementById('ytFrame').src='https://www.youtube.com/embed/r_kNx6eM9r4?autoplay=1&rel=0&modestbranding=1';
 }
 
+// ===== FIREBASE CONFIG =====
+const FIREBASE_URL = 'https://lkpd-bab6-default-rtdb.asia-southeast1.firebasedatabase.app';
+
+// ===== HITUNG PROGRES =====
+function hitungProgres() {
+  const d = getAllData();
+  const bagian = [
+    { label: 'Identitas & Anggota', bobot: 10, selesai: !!(d.namaKelompok && d.kelas && d.anggota[0] && d.anggota[0].nama) },
+    { label: 'Bagian A – Video',    bobot: 20, selesai: !!(d.a1 && d.a1.trim() && d.a2 && d.a2.trim() && d.a3 && d.a3.trim()) },
+    { label: 'Bagian B – Ekologi',  bobot: 20, selesai: !!(d.b1 && d.b1.trim() && d.b2 && d.b2.trim()) },
+    { label: 'Tabel Ekosistem',     bobot: 15, selesai: !!(d.t1a && d.t1a.trim() && d.t2a && d.t2a.trim() && d.t3a && d.t3a.trim()) },
+    { label: 'Bagian C – Reboisasi',bobot: 20, selesai: !!(d.c1 && d.c1.trim() && d.c2 && d.c2.trim() && d.c3 && d.c3.trim() && d.c4 && d.c4.trim()) },
+    { label: 'Bagian D – Aksi',     bobot:  5, selesai: !!(d.d1 && d.d1.trim()) },
+    { label: 'Refleksi',            bobot: 10, selesai: !!(d.ref1 && d.ref1.trim() && d.ref2 && d.ref2.trim()) },
+  ];
+  const persen = bagian.reduce((acc, b) => acc + (b.selesai ? b.bobot : 0), 0);
+  const selesai = bagian.filter(b => b.selesai).length;
+  return { persen, selesai, total: bagian.length, bagian };
+}
+
+// ===== STATUS KIRIM =====
+function tampilStatus(pesan, tipe) {
+  const el = document.getElementById('statusKirim');
+  if (!el) return;
+  el.style.display = 'block';
+  const styles = {
+    ok:   { bg:'#e8f5e9', color:'#1a5c2a', border:'#a5d6a7' },
+    err:  { bg:'#ffebee', color:'#c62828', border:'#ef9a9a' },
+    info: { bg:'#e3f2fd', color:'#1565c0', border:'#90caf9' },
+  };
+  const s = styles[tipe] || styles.info;
+  el.style.background = s.bg;
+  el.style.color = s.color;
+  el.style.border = '2px solid ' + s.border;
+  el.textContent = pesan;
+}
+
+// ===== KIRIM KE GURU =====
+async function kirimKeGuru() {
+  const kodeEl = document.getElementById('kodeGuru');
+  const kode = kodeEl ? kodeEl.value.trim().toUpperCase() : '';
+  if (!kode) { tampilStatus('Masukkan kode sesi terlebih dahulu!', 'err'); return; }
+
+  const d = getAllData();
+  if (!d.namaKelompok) { tampilStatus('Isi nama kelompok sebelum mengirim!', 'err'); return; }
+
+  const prog = hitungProgres();
+  const payload = {
+    namaKelompok: d.namaKelompok,
+    kelas: d.kelas || '-',
+    jumlahAnggota: d.jumlahAnggota,
+    anggota: d.anggota.map(a => ({ nama: a.nama||'-', peran: a.peran||'-', bagian: a.bagian||'-' })),
+    progres: prog.persen,
+    bagianSelesai: prog.selesai,
+    totalBagian: prog.total,
+    detailBagian: prog.bagian,
+    mood: d.mood || '-',
+    waktuKirim: new Date().toLocaleString('id-ID'),
+    timestamp: Date.now(),
+    progChecklist: d.prog || [],
+  };
+
+  tampilStatus('Mengirim data...', 'info');
+
+  try {
+    const kelompokId = d.namaKelompok.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'') || 'kelompok';
+    const url = FIREBASE_URL + '/sesi/' + kode + '/' + kelompokId + '.json';
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    localStorage.setItem('lkpd_kode_sesi', kode);
+    tampilStatus('Berhasil dikirim! Progres: ' + prog.persen + '% (' + prog.selesai + '/' + prog.total + ' bagian selesai)', 'ok');
+    showToast('Progres terkirim ke guru!', '#1565c0');
+  } catch(e) {
+    tampilStatus('Gagal mengirim. Periksa koneksi WiFi, lalu coba lagi. (' + e.message + ')', 'err');
+  }
+}
+
+// Auto-kirim setiap 2 menit jika kode sudah diisi
+setInterval(function() {
+  const kodeEl = document.getElementById('kodeGuru');
+  const kode = kodeEl ? kodeEl.value.trim() : '';
+  if (kode && kode.length >= 4) kirimKeGuru();
+}, 120000);
+
 // ===== INIT =====
-window.addEventListener('load', () => {
+window.addEventListener('load', function() {
   updateAnggota();
   loadData();
+  var savedKode = localStorage.getItem('lkpd_kode_sesi');
+  if (savedKode) {
+    var kodeEl = document.getElementById('kodeGuru');
+    if (kodeEl) kodeEl.value = savedKode;
+  }
 });
 setInterval(simpanData, 60000);
 </script>
