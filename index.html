@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD - Bencana Longsor dan Reboisasi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e7e34;
+            --secondary: #52b788;
+            --accent: #d62828;
+            --dark: #2d3142;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --success: #06a77d;
+            --warning: #ff9f1c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -5%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+
+        /* NAVIGATION TABS */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background: #f0f0f0;
+            border-bottom: 3px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        .nav-tabs button {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            position: relative;
+        }
+
+        .nav-tabs button:hover {
+            background: rgba(30, 126, 52, 0.1);
+        }
+
+        .nav-tabs button.active {
+            color: var(--primary);
+            background: white;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SECTION HEADER */
+        .section h2 {
+            color: var(--primary);
+            font-size: 2em;
+            margin-bottom: 10px;
+            border-bottom: 4px solid var(--secondary);
+            padding-bottom: 15px;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* STUDENT INFO */
+        .student-info {
+            background: linear-gradient(135deg, rgba(30, 126, 52, 0.05), rgba(82, 183, 136, 0.05));
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            min-width: 80px;
+            color: var(--primary);
+        }
+
+        .info-item input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .info-item input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.1);
+        }
+
+        /* QUESTION STYLES */
+        .question-block {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .question-block.important {
+            border-left-color: var(--accent);
+            background: rgba(214, 40, 40, 0.05);
+        }
+
+        .question-block h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        /* ANSWER BOX */
+        .answer-box {
+            background: white;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1em;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+
+        .answer-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.1);
+        }
+
+        /* TABLES */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: rgba(30, 126, 52, 0.03);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* CHECKLIST */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(30, 126, 52, 0.1);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-item label {
+            flex: 1;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        /* RADIO BUTTONS */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .radio-item:hover {
+            background: rgba(30, 126, 52, 0.1);
+        }
+
+        .radio-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .radio-item label {
+            flex: 1;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        /* BUTTONS */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #155e2a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 126, 52, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #3a9b6a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(82, 183, 136, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #048a6f;
+        }
+
+        /* ALERTS & BOXES */
+        .alert {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-info {
+            background: rgba(30, 126, 52, 0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .alert-warning {
+            background: rgba(255, 159, 28, 0.1);
+            border-left-color: var(--warning);
+            color: #8b6f00;
+        }
+
+        .alert-success {
+            background: rgba(6, 168, 125, 0.1);
+            border-left-color: var(--success);
+            color: #047857;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(82, 183, 136, 0.1), rgba(30, 126, 52, 0.1));
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid var(--secondary);
+            margin: 20px 0;
+        }
+
+        .highlight-box strong {
+            color: var(--primary);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 30px 40px;
+            margin-top: 40px;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white;
+            }
+            .nav-tabs, .button-group {
+                display: none;
+            }
+            .section {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            header {
+                padding: 40px 20px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .nav-tabs button {
+                min-width: 120px;
+                padding: 12px 15px;
+                font-size: 0.85em;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group, .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question-block {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        /* UTILITY */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mb-30 {
+            margin-bottom: 30px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .text-muted {
+            color: #999;
+        }
+
+        .learning-objectives {
+            background: linear-gradient(135deg, rgba(82, 183, 136, 0.15), rgba(30, 126, 52, 0.15));
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            margin: 20px 0;
+        }
+
+        .learning-objectives h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .learning-objectives ul {
+            list-style-position: inside;
+            margin-left: 0;
+        }
+
+        .learning-objectives li {
+            margin: 10px 0;
+            color: var(--dark);
+        }
+
+        .learning-objectives li::marker {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* PROGRESS INDICATOR */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>📚 LKPD - Bencana Longsor & Reboisasi</h1>
+            <p class="subtitle">Ekologi, Keanekaragaman Hayati, dan Pelestarian Lingkungan</p>
+        </header>
+
+        <!-- NAVIGATION TABS -->
+        <div class="nav-tabs">
+            <button class="tab-button active" data-tab="info">Informasi</button>
+            <button class="tab-button" data-tab="video">Video & Pemahaman</button>
+            <button class="tab-button" data-tab="ekologi">Ekologi</button>
+            <button class="tab-button" data-tab="reboisasi">Reboisasi</button>
+            <button class="tab-button" data-tab="aksi">Aksi Nyata</button>
+            <button class="tab-button" data-tab="evaluasi">Evaluasi</button>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            <!-- TAB 1: INFO & TUJUAN -->
+            <section id="info" class="section active">
+                <h2>📋 Informasi Peserta Didik</h2>
+                <p class="section-subtitle">Silakan isi data diri Anda terlebih dahulu</p>
+
+                <div class="student-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Nama:</label>
+                            <input type="text" placeholder="Masukkan nama lengkap" id="nama">
+                        </div>
+                        <div class="info-item">
+                            <label>Kelas:</label>
+                            <input type="text" placeholder="Contoh: X IPA 1" id="kelas">
+                        </div>
+                        <div class="info-item">
+                            <label>No. Absen:</label>
+                            <input type="number" placeholder="Nomor absen" id="absen">
+                        </div>
+                        <div class="info-item">
+                            <label>Tanggal:</label>
+                            <input type="date" id="tanggal">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: 40px;">🎯 Petunjuk Penggunaan LKPD</h3>
+                <div class="question-block">
+                    <ol style="margin-left: 20px;">
+                        <li style="margin-bottom: 10px;">Pelajari video tayangan tentang bencana longsor dengan seksama</li>
+                        <li style="margin-bottom: 10px;">Jawab semua pertanyaan sesuai dengan pemahaman Anda</li>
+                        <li style="margin-bottom: 10px;">Diskusikan jawaban dengan teman sekelompok</li>
+                        <li>Gunakan berbagai sumber belajar untuk memperkaya jawaban</li>
+                    </ol>
+                </div>
+
+                <div class="learning-objectives">
+                    <h3>🎓 Tujuan Pembelajaran</h3>
+                    <p>Setelah menyelesaikan LKPD ini, peserta didik diharapkan dapat:</p>
+                    <ul>
+                        <li>Memahami penyebab dan dampak bencana longsor bagi lingkungan</li>
+                        <li>Mengenal peran vegetasi dalam mencegah erosi dan longsor</li>
+                        <li>Memahami konsep ekologi dan keanekaragaman hayati</li>
+                        <li>Mengidentifikasi peluang dan strategi reboisasi</li>
+                        <li>Menunjukkan kesadaran dan komitmen menjaga kelestarian lingkungan</li>
+                        <li>Merancang rencana aksi nyata untuk pelestarian lingkungan</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- TAB 2: VIDEO & PEMAHAMAN -->
+            <section id="video" class="section">
+                <h2>🎬 Pemahaman Video: Bencana Longsor</h2>
+                <p class="section-subtitle">Analisis tayangan video tentang bencana longsor</p>
+
+                <div class="question-block">
+                    <h3><span class="question-number">1</span> Pengalaman Menonton</h3>
+                    <p>Apa yang Anda lihat dan dengarkan dalam video tentang bencana longsor? Jelaskan pengalaman yang paling berkesan bagi Anda.</p>
+                    <textarea class="answer-box" placeholder="Tulis jawaban Anda di sini..." rows="5"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">2</span> Penyebab Longsor</h3>
+                    <p>Apa saja penyebab utama terjadinya longsor menurut video? Sebutkan minimal 3 penyebab dan jelaskan masing-masing.</p>
+                    <textarea class="answer-box" placeholder="1. ...\n2. ...\n3. ..." rows="6"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">3</span> Dampak Negatif</h3>
+                    <p>Apa dampak negatif dari bencana longsor terhadap masyarakat dan lingkungan?</p>
+                    <textarea class="answer-box" placeholder="Dampak terhadap masyarakat:\nDampak terhadap lingkungan:" rows="6"></textarea>
+                </div>
+
+                <div class="question-block important">
+                    <h3><span class="question-number">4</span> Analisis Kritis</h3>
+                    <p>Menurut Anda, apakah bencana longsor dapat dicegah sepenuhnya atau hanya dapat dikurangi risikonya? Jelaskan alasan Anda dengan logis!</p>
+                    <textarea class="answer-box" placeholder="Tulis analisis Anda..." rows="6"></textarea>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 Tips:</strong> Jawab berdasarkan apa yang Anda pahami dari video. Jika memungkinkan, hubungkan dengan pengetahuan Anda tentang lingkungan dan alam.
+                </div>
+            </section>
+
+            <!-- TAB 3: EKOLOGI -->
+            <section id="ekologi" class="section">
+                <h2>🌍 Ekologi dan Keanekaragaman Hayati</h2>
+                <p class="section-subtitle">Memahami konsep dasar ekologi dan pentingnya keanekaragaman</p>
+
+                <div class="question-block">
+                    <h3><span class="question-number">1</span> Pengertian Ekologi</h3>
+                    <p>Jelaskan pengertian ekologi dan bagaimana hubungannya dengan bencana longsor!</p>
+                    <textarea class="answer-box" placeholder="Pengertian ekologi:\nHubungan dengan longsor:" rows="6"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">2</span> Keanekaragaman Hayati</h3>
+                    <p>Apa yang dimaksud dengan keanekaragaman hayati? Sebutkan contoh keanekaragaman hayati di lingkungan sekitar sekolah Anda!</p>
+                    <textarea class="answer-box" placeholder="Pengertian:\nContoh di sekitar sekolah:" rows="6"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">3</span> Keanekaragaman Hayati & Pencegahan Longsor</h3>
+                    <p>Bagaimana keanekaragaman hayati dapat membantu mencegah atau mengurangi risiko longsor?</p>
+                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="5"></textarea>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">📊 Komponen Ekosistem</h3>
+                <p style="margin-bottom: 20px;">Isilah tabel di bawah tentang komponen ekosistem pada lahan yang rawan longsor:</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Komponen Ekosistem</th>
+                                <th>Contoh</th>
+                                <th>Peran dalam Pencegahan Longsor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Produsen</strong></td>
+                                <td><input type="text" class="input-field" placeholder="Contoh: pohon, rumput"></td>
+                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Konsumen I (Herbivora)</strong></td>
+                                <td><input type="text" class="input-field" placeholder="Contoh: serangga, burung"></td>
+                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Konsumen II (Karnivora)</strong></td>
+                                <td><input type="text" class="input-field" placeholder="Contoh: elang, ular"></td>
+                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pengurai</strong></td>
+                                <td><input type="text" class="input-field" placeholder="Contoh: bakteri, jamur"></td>
+                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>✓ Penting:</strong> Setiap komponen ekosistem memiliki peran penting dalam menjaga keseimbangan alam dan mencegah bencana alam seperti longsor.
+                </div>
+            </section>
+
+            <!-- TAB 4: REBOISASI -->
+            <section id="reboisasi" class="section">
+                <h2>🌳 Peran Reboisasi dalam Pelestarian Lingkungan</h2>
+                <p class="section-subtitle">Memahami pentingnya penanaman kembali pohon</p>
+
+                <div class="question-block">
+                    <h3><span class="question-number">1</span> Pentingnya Reboisasi</h3>
+                    <p>Jelaskan mengapa reboisasi sangat penting untuk mencegah bencana longsor!</p>
+                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="6"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">2</span> Manfaat Reboisasi</h3>
+                    <p>Apa manfaat reboisasi selain mencegah longsor? Sebutkan minimal 5 manfaat dan jelaskan!</p>
+                    <textarea class="answer-box" placeholder="1. ...\n2. ...\n3. ...\n4. ...\n5. ..." rows="8"></textarea>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">🌲 Jenis-Jenis Pohon untuk Reboisasi</h3>
+                <p style="margin-bottom: 20px;">Lengkapilah tabel berikut dengan jenis-jenis pohon yang cocok untuk reboisasi di daerah rawan longsor:</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Pohon</th>
+                                <th>Nama Ilmiah</th>
+                                <th>Manfaat</th>
+                                <th>Lokasi Terbaik</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text" class="input-field" placeholder="Contoh: Pohon Pinus"></td>
+                                <td><input type="text" class="input-field" placeholder="Contoh: Pinus merkusii"></td>
+                                <td><input type="text" class="input-field" placeholder="Memperkuat akar tanah"></td>
+                                <td><input type="text" class="input-field" placeholder="Lahan berbukit"></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                                <td><input type="text" class="input-field"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Catatan:</strong> Pilih jenis pohon yang sesuai dengan iklim dan kondisi tanah lokal Anda untuk hasil reboisasi yang optimal.
+                </div>
+            </section>
+
+            <!-- TAB 5: AKSI NYATA -->
+            <section id="aksi" class="section">
+                <h2>✊ Kesadaran Lingkungan dan Aksi Nyata</h2>
+                <p class="section-subtitle">Refleksi diri dan perencanaan aksi konkret untuk lingkungan</p>
+
+                <h3 style="color: var(--primary); margin-bottom: 20px;">🤔 Refleksi Diri</h3>
+
+                <div class="question-block">
+                    <h3><span class="question-number">1</span> Perasaan Setelah Menonton</h3>
+                    <p>Bagaimana perasaan Anda setelah menonton video tentang bencana longsor? Apa yang membuat Anda merasa tersentuh?</p>
+                    <textarea class="answer-box" placeholder="Tulis perasaan Anda..." rows="5"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">2</span> Tanggung Jawab Generasi Muda</h3>
+                    <p>Apa tanggung jawab Anda sebagai generasi muda dalam menjaga kelestarian lingkungan?</p>
+                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="5"></textarea>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">📋 Rencana Aksi Reboisasi & Pelestarian</h3>
+                <p style="margin-bottom: 20px;">Buatlah rencana aksi Anda untuk berkontribusi dalam reboisasi dan pelestarian lingkungan:</p>
+
+                <div class="question-block">
+                    <h3><span class="question-number">3</span> Tujuan Aksi</h3>
+                    <p>Apa tujuan aksi yang akan Anda lakukan?</p>
+                    <textarea class="answer-box" placeholder="Contoh: Menanam 50 pohon di area rawan longsor..." rows="4"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">4</span> Pihak yang Terlibat</h3>
+                    <p>Siapa saja yang akan terlibat dalam aksi ini? (teman, keluarga, komunitas, sekolah, dll)</p>
+                    <textarea class="answer-box" placeholder="Teman sekelas, keluarga, guru, komunitas lingkungan..." rows="4"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">5</span> Kegiatan Konkret</h3>
+                    <p>Apa saja yang akan Anda lakukan secara konkret? (jelaskan langkah-langkah detail)</p>
+                    <textarea class="answer-box" placeholder="Langkah 1: ...\nLangkah 2: ...\nLangkah 3: ..." rows="6"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">6</span> Evaluasi Keberhasilan</h3>
+                    <p>Bagaimana Anda akan mengevaluasi keberhasilan aksi Anda?</p>
+                    <textarea class="answer-box" placeholder="Indikator keberhasilan:\nCara mengukur:\nTarget yang ingin dicapai:" rows="5"></textarea>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>🌟 Bentuk Kampanye Kesadaran yang Bisa Anda Pilih:</strong>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="poster">
+                            <label for="poster">Poster edukasi tentang longsor & reboisasi</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="video">
+                            <label for="video">Video edukasi singkat (2-3 menit)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ppt">
+                            <label for="ppt">Presentasi PowerPoint tentang ekologi</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="brosur">
+                            <label for="brosur">Brosur informatif program reboisasi</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tanam">
+                            <label for="tanam">Kegiatan penanaman pohon nyata</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h3>Bentuk Kampanye yang Dipilih Kelompok Anda</h3>
+                    <textarea class="answer-box" placeholder="Tulis pilihan Anda..." rows="4"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3>Rencana Pelaksanaan</h3>
+                    <textarea class="answer-box" placeholder="Kapan, di mana, dan bagaimana pelaksanaannya..." rows="5"></textarea>
+                </div>
+            </section>
+
+            <!-- TAB 6: EVALUASI -->
+            <section id="evaluasi" class="section">
+                <h2>📊 Evaluasi dan Refleksi Diri</h2>
+                <p class="section-subtitle">Penilaian pemahaman dan refleksi akhir pembelajaran</p>
+
+                <h3 style="color: var(--primary); margin-bottom: 20px;">✓ Penilaian Pemahaman Anda</h3>
+                <p style="margin-bottom: 20px;">Berilah tanda pada kolom yang sesuai dengan pemahaman Anda:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspek Pembelajaran</th>
+                                <th>Sudah Mengerti</th>
+                                <th>Sedang Belajar</th>
+                                <th>Masih Bingung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Memahami penyebab terjadinya longsor</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Memahami dampak longsor terhadap lingkungan</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Memahami peran vegetasi dalam mencegah longsor</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Memahami konsep ekologi</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Memahami keanekaragaman hayati</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Memahami pentingnya reboisasi</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Memiliki kesadaran menjaga lingkungan</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Mampu merancang rencana aksi nyata</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">💭 Refleksi Akhir</h3>
+
+                <div class="question-block">
+                    <h3><span class="question-number">1</span> Pembelajaran Terpenting</h3>
+                    <p>Apa pembelajaran terpenting yang Anda dapatkan dari LKPD ini?</p>
+                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="5"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">2</span> Perubahan Sikap & Perilaku</h3>
+                    <p>Bagaimana Anda akan mengubah sikap dan perilaku Anda untuk menjaga lingkungan setelah menyelesaikan LKPD ini?</p>
+                    <textarea class="answer-box" placeholder="Tulis komitmen Anda..." rows="5"></textarea>
+                </div>
+
+                <div class="question-block">
+                    <h3><span class="question-number">3</span> Saran Perbaikan</h3>
+                    <p>Apa saran Anda untuk meningkatkan kesadaran lingkungan di sekolah atau komunitas Anda?</p>
+                    <textarea class="answer-box" placeholder="Tulis saran Anda..." rows="5"></textarea>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 40px;">
+                    <strong>🌱 Pesan Inspirasi:</strong>
+                    <p style="margin-top: 10px;">Setiap tindakan kecil yang Anda lakukan untuk lingkungan memiliki dampak besar. Jadilah agen perubahan untuk masa depan yang lebih hijau! 🌍💚</p>
+                </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn-success" onclick="simpanData()">💾 Simpan Jawaban Saya</button>
+                    <button class="btn-primary" onclick="cetakLKPD()">🖨️ Cetak LKPD</button>
+                    <button class="btn-secondary" onclick="resetForm()">↻ Ulang Pengisian</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p><strong>LKPD - Bencana Longsor & Reboisasi</strong></p>
+            <p>Mata Pelajaran: Biologi | Topik: Ekologi dan Keanekaragaman Hayati</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">📝 Semoga LKPD ini menginspirasi Anda untuk menjaga kelestarian lingkungan kita bersama! 🌳</p>
+        </footer>
+    </div>
+
+    <script>
+        // TAB NAVIGATION
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const sections = document.querySelectorAll('.section');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.getAttribute('data-tab');
+
+                // Remove active from all
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                sections.forEach(section => section.classList.remove('active'));
+
+                // Add active to clicked
+                button.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+
+                // Scroll to top
+                document.querySelector('.content').scrollTop = 0;
+            });
+        });
+
+        // Set today's date
+        document.getElementById('tanggal').valueAsDate = new Date();
+
+        // SIMPAN DATA
+        function simpanData() {
+            const nama = document.getElementById('nama').value;
+            const kelas = document.getElementById('kelas').value;
+
+            if (!nama || !kelas) {
+                alert('Silakan isi nama dan kelas Anda terlebih dahulu!');
+                return;
+            }
+
+            // Collect all textarea values
+            const data = {
+                nama: nama,
+                kelas: kelas,
+                absen: document.getElementById('absen').value,
+                tanggal: document.getElementById('tanggal').value,
+                timestamp: new Date().toLocaleString('id-ID')
+            };
+
+            // Save to localStorage
+            localStorage.setItem('lkpdData_' + nama + '_' + new Date().getTime(), JSON.stringify(data));
+            alert('✓ Jawaban Anda telah disimpan!\n\nNama: ' + nama + '\nKelas: ' + kelas);
+        }
+
+        // CETAK
+        function cetakLKPD() {
+            const nama = document.getElementById('nama').value;
+            if (!nama) {
+                alert('Silakan isi nama Anda terlebih dahulu!');
+                return;
+            }
+            window.print();
+        }
+
+        // RESET FORM
+        function resetForm() {
+            if (confirm('Apakah Anda yakin ingin menghapus semua jawaban? Tindakan ini tidak dapat dibatalkan!')) {
+                document.querySelectorAll('textarea').forEach(ta => ta.value = '');
+                document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                alert('Form telah direset!');
+            }
+        }
+
+        // Auto-save to localStorage every 30 seconds
+        setInterval(() => {
+            const nama = document.getElementById('nama').value;
+            if (nama) {
+                const textareas = document.querySelectorAll('textarea');
+                const answers = Array.from(textareas).map(ta => ta.value);
+                localStorage.setItem('autosave_' + nama, JSON.stringify(answers));
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
