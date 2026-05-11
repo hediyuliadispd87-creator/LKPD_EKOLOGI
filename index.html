@@ -1,1217 +1,1990 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD - Bencana Longsor dan Reboisasi</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #1e7e34;
-            --secondary: #52b788;
-            --accent: #d62828;
-            --dark: #2d3142;
-            --light: #f8f9fa;
-            --border: #dee2e6;
-            --success: #06a77d;
-            --warning: #ff9f1c;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        /* HEADER */
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 60px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -50%;
-            left: -5%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        header h1 {
-            font-size: 2.8em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        header .subtitle {
-            font-size: 1.3em;
-            opacity: 0.95;
-            position: relative;
-            z-index: 1;
-            font-weight: 300;
-        }
-
-        /* NAVIGATION TABS */
-        .nav-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            background: #f0f0f0;
-            border-bottom: 3px solid var(--primary);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            overflow-x: auto;
-        }
-
-        .nav-tabs button {
-            flex: 1;
-            min-width: 150px;
-            padding: 15px 20px;
-            background: transparent;
-            border: none;
-            color: var(--dark);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95em;
-            position: relative;
-        }
-
-        .nav-tabs button:hover {
-            background: rgba(30, 126, 52, 0.1);
-        }
-
-        .nav-tabs button.active {
-            color: var(--primary);
-            background: white;
-            border-bottom: 4px solid var(--primary);
-        }
-
-        /* CONTENT */
-        .content {
-            padding: 40px;
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* SECTION HEADER */
-        .section h2 {
-            color: var(--primary);
-            font-size: 2em;
-            margin-bottom: 10px;
-            border-bottom: 4px solid var(--secondary);
-            padding-bottom: 15px;
-        }
-
-        .section-subtitle {
-            color: #666;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-
-        /* STUDENT INFO */
-        .student-info {
-            background: linear-gradient(135deg, rgba(30, 126, 52, 0.05), rgba(82, 183, 136, 0.05));
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 5px solid var(--primary);
-            margin-bottom: 30px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .info-item label {
-            font-weight: 600;
-            min-width: 80px;
-            color: var(--primary);
-        }
-
-        .info-item input {
-            flex: 1;
-            padding: 10px 15px;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        .info-item input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.1);
-        }
-
-        /* QUESTION STYLES */
-        .question-block {
-            margin: 30px 0;
-            padding: 25px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border-left: 5px solid var(--secondary);
-        }
-
-        .question-block.important {
-            border-left-color: var(--accent);
-            background: rgba(214, 40, 40, 0.05);
-        }
-
-        .question-block h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .question-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: var(--secondary);
-            color: white;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        /* ANSWER BOX */
-        .answer-box {
-            background: white;
-            border: 2px dashed var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 15px;
-            min-height: 100px;
-            resize: vertical;
-            font-family: inherit;
-            font-size: 1em;
-            color: var(--dark);
-            transition: all 0.3s;
-        }
-
-        .answer-box:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.1);
-        }
-
-        /* TABLES */
-        .table-container {
-            overflow-x: auto;
-            margin: 20px 0;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        thead {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            font-weight: 600;
-        }
-
-        th {
-            padding: 15px;
-            text-align: left;
-            font-size: 0.95em;
-        }
-
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        tbody tr:hover {
-            background: rgba(30, 126, 52, 0.03);
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-
-        /* CHECKLIST */
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            transition: all 0.3s;
-        }
-
-        .checkbox-item:hover {
-            background: rgba(30, 126, 52, 0.1);
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .checkbox-item label {
-            flex: 1;
-            cursor: pointer;
-            margin: 0;
-        }
-
-        /* RADIO BUTTONS */
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .radio-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            transition: all 0.3s;
-        }
-
-        .radio-item:hover {
-            background: rgba(30, 126, 52, 0.1);
-        }
-
-        .radio-item input[type="radio"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .radio-item label {
-            flex: 1;
-            cursor: pointer;
-            margin: 0;
-        }
-
-        /* BUTTONS */
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 12px 25px;
-            font-size: 1em;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #155e2a;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(30, 126, 52, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #3a9b6a;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(82, 183, 136, 0.3);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #048a6f;
-        }
-
-        /* ALERTS & BOXES */
-        .alert {
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 5px solid;
-        }
-
-        .alert-info {
-            background: rgba(30, 126, 52, 0.1);
-            border-left-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .alert-warning {
-            background: rgba(255, 159, 28, 0.1);
-            border-left-color: var(--warning);
-            color: #8b6f00;
-        }
-
-        .alert-success {
-            background: rgba(6, 168, 125, 0.1);
-            border-left-color: var(--success);
-            color: #047857;
-        }
-
-        .highlight-box {
-            background: linear-gradient(135deg, rgba(82, 183, 136, 0.1), rgba(30, 126, 52, 0.1));
-            padding: 20px;
-            border-radius: 8px;
-            border: 2px solid var(--secondary);
-            margin: 20px 0;
-        }
-
-        .highlight-box strong {
-            color: var(--primary);
-        }
-
-        /* FOOTER */
-        footer {
-            background: var(--dark);
-            color: white;
-            text-align: center;
-            padding: 30px 40px;
-            margin-top: 40px;
-        }
-
-        footer p {
-            margin: 8px 0;
-        }
-
-        /* PRINT STYLES */
-        @media print {
-            body {
-                background: white;
-            }
-            .nav-tabs, .button-group {
-                display: none;
-            }
-            .section {
-                display: block !important;
-                page-break-inside: avoid;
-            }
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .container {
-                border-radius: 0;
-                box-shadow: none;
-            }
-
-            header {
-                padding: 40px 20px;
-            }
-
-            header h1 {
-                font-size: 1.8em;
-            }
-
-            .content {
-                padding: 20px;
-            }
-
-            .nav-tabs button {
-                min-width: 120px;
-                padding: 12px 15px;
-                font-size: 0.85em;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .checkbox-group, .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .question-block {
-                padding: 15px;
-            }
-
-            table {
-                font-size: 0.9em;
-            }
-
-            th, td {
-                padding: 10px;
-            }
-        }
-
-        /* UTILITY */
-        .text-center {
-            text-align: center;
-        }
-
-        .mb-20 {
-            margin-bottom: 20px;
-        }
-
-        .mb-30 {
-            margin-bottom: 30px;
-        }
-
-        .mt-20 {
-            margin-top: 20px;
-        }
-
-        .text-muted {
-            color: #999;
-        }
-
-        .learning-objectives {
-            background: linear-gradient(135deg, rgba(82, 183, 136, 0.15), rgba(30, 126, 52, 0.15));
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 5px solid var(--primary);
-            margin: 20px 0;
-        }
-
-        .learning-objectives h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .learning-objectives ul {
-            list-style-position: inside;
-            margin-left: 0;
-        }
-
-        .learning-objectives li {
-            margin: 10px 0;
-            color: var(--dark);
-        }
-
-        .learning-objectives li::marker {
-            color: var(--secondary);
-            font-weight: bold;
-        }
-
-        /* PROGRESS INDICATOR */
-        .progress-container {
-            margin-bottom: 30px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .progress-text {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 8px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LKPD Kelompok – Longsor, Ekologi & Keanekaragaman Hayati</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --hijau-tua: #1a5c2a;
+    --hijau: #2e7d32;
+    --hijau-muda: #4caf50;
+    --hijau-terang: #a5d6a7;
+    --coklat: #6d4c41;
+    --coklat-muda: #d7ccc8;
+    --kuning: #f9a825;
+    --krem: #fdf6e3;
+    --putih: #ffffff;
+    --abu: #546e7a;
+    --merah: #c62828;
+    --ungu: #4527a0;
+    --biru: #1565c0;
+    --shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #e8f5e9;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(46,125,50,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(109,76,65,0.06) 0%, transparent 50%);
+    color: #1b3a1f;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--hijau-tua) 0%, var(--hijau) 50%, #388e3c 100%);
+    color: white;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: -20px; right: -20px;
+    height: 80px;
+    background: #e8f5e9;
+    border-radius: 60% 60% 0 0;
+    z-index: 2;
+  }
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 32px 60px;
+    position: relative; z-index: 1;
+    text-align: center;
+  }
+  .badge-lkpd {
+    display: inline-block;
+    background: var(--kuning);
+    color: var(--hijau-tua);
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-family: 'Merriweather', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  header h1 span { color: var(--kuning); }
+  .header-sub {
+    font-size: 0.95rem;
+    opacity: 0.88;
+    margin-bottom: 24px;
+  }
+  .header-meta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .meta-chip {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ===== WRAPPER ===== */
+  .wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ===== IDENTITAS KELOMPOK ===== */
+  .card-identitas {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+    border-top: 5px solid var(--hijau);
+  }
+  .card-identitas h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 1.1rem;
+    color: var(--hijau-tua);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-identitas h2::before {
+    content: '📋';
+    font-size: 1.3rem;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--abu);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .form-group input, .form-group select {
+    padding: 10px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: #1b3a1f;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--hijau);
+    background: #f1f8e9;
+  }
+
+  /* ===== SECTION HEADER DIVIDER ===== */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0 14px;
+  }
+  .section-divider .divider-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--hijau-terang), transparent);
+    border-radius: 2px;
+  }
+  .section-divider .divider-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--hijau);
+  }
+
+  /* ===== TABEL PEMBAGIAN TUGAS ===== */
+  .card-tugas {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+    border-top: 5px solid #7b1fa2;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-tugas::after {
+    content: '👥';
+    position: absolute;
+    top: 18px; right: 24px;
+    font-size: 2.5rem;
+    opacity: 0.08;
+  }
+  .card-tugas h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 1.1rem;
+    color: #4527a0;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-tugas p.desc {
+    font-size: 0.85rem;
+    color: var(--abu);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* Tabel Anggota Kelompok */
+  .tabel-anggota {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e1bee7;
+  }
+  .tabel-anggota thead tr {
+    background: linear-gradient(90deg, #6a1b9a, #8e24aa);
+    color: white;
+  }
+  .tabel-anggota th {
+    padding: 11px 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
+  }
+  .tabel-anggota tbody tr:nth-child(even) { background: #f3e5f5; }
+  .tabel-anggota tbody tr:nth-child(odd) { background: white; }
+  .tabel-anggota td {
+    padding: 7px 10px;
+    border-top: 1px solid #e1bee7;
+    vertical-align: middle;
+  }
+  .tabel-anggota td .no-anggota {
+    background: #7b1fa2;
+    color: white;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+    margin: auto;
+  }
+  .tabel-anggota td input, .tabel-anggota td select {
+    width: 100%;
+    border: 1.5px solid #ce93d8;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    background: white;
+    color: #1b3a1f;
+    transition: border-color 0.2s;
+  }
+  .tabel-anggota td input:focus, .tabel-anggota td select:focus {
+    border-color: #7b1fa2;
+    background: #fce4ec;
+  }
+  .badge-ketua {
+    display: inline-block;
+    background: #f9a825;
+    color: #4a2800;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ===== TUGAS SPESIFIK PER ANGGOTA ===== */
+  .tugas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .tugas-card {
+    border-radius: 14px;
+    padding: 16px;
+    border: 2px solid #ce93d8;
+    background: #fce4fc;
+    position: relative;
+    overflow: hidden;
+  }
+  .tugas-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #7b1fa2, #ce93d8);
+  }
+  .tugas-card h4 {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #4527a0;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tugas-card .anggota-nama-ref {
+    font-size: 0.78rem;
+    color: #7b1fa2;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .tugas-card input, .tugas-card textarea {
+    width: 100%;
+    border: 1.5px solid #ce93d8;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    background: white;
+    color: #1b3a1f;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .tugas-card input:focus, .tugas-card textarea:focus {
+    border-color: #7b1fa2;
+  }
+  .tugas-card label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--abu);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 4px;
+    margin-top: 8px;
+  }
+  .tugas-card label:first-of-type { margin-top: 0; }
+
+  /* ===== PROGRESS KELOMPOK ===== */
+  .progress-wrapper {
+    background: #f3e5f5;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 20px;
+    border: 2px dashed #ce93d8;
+  }
+  .progress-wrapper h4 {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #4527a0;
+    margin-bottom: 12px;
+  }
+  .progress-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+  }
+  .progress-item input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: #7b1fa2;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .progress-item label {
+    cursor: pointer;
+    line-height: 1.4;
+    color: #1b3a1f;
+  }
+
+  /* ===== SECTION CARD ===== */
+  .section-card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .section-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .card-green::before { background: linear-gradient(90deg, var(--hijau-tua), var(--hijau-muda)); }
+  .card-brown::before { background: linear-gradient(90deg, var(--coklat), #a1887f); }
+  .card-yellow::before { background: linear-gradient(90deg, var(--kuning), #ffcc02); }
+  .card-teal::before { background: linear-gradient(90deg, #00695c, #26a69a); }
+  .card-indigo::before { background: linear-gradient(90deg, #283593, #5c6bc0); }
+
+  .section-num {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: var(--hijau-tua);
+    color: white;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+  .section-card h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 1.15rem;
+    color: var(--hijau-tua);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .section-desc {
+    font-size: 0.88rem;
+    color: var(--abu);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* Tag penanggung jawab soal */
+  .pj-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #e8eaf6;
+    color: #283593;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    border: 1px solid #9fa8da;
+    vertical-align: middle;
+  }
+  .pj-tag select {
+    border: none;
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #283593;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    max-width: 120px;
+  }
+
+  /* ===== VIDEO ===== */
+  .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    border: 3px solid var(--hijau-terang);
+  }
+  .video-container iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+  .video-caption {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--abu);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  /* ===== TUJUAN PEMBELAJARAN ===== */
+  .tujuan-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tujuan-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: #f1f8e9;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    border-left: 4px solid var(--hijau-muda);
+  }
+  .tujuan-list li .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ===== PETA KONSEP ===== */
+  .konsep-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .konsep-box {
+    border-radius: 14px;
+    padding: 16px;
+    border: 2px solid;
+  }
+  .konsep-box.hijau { border-color: var(--hijau); background: #f1f8e9; }
+  .konsep-box.coklat { border-color: var(--coklat); background: #efebe9; }
+  .konsep-box h3 {
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .konsep-box.hijau h3 { color: var(--hijau-tua); }
+  .konsep-box.coklat h3 { color: var(--coklat); }
+  .konsep-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .konsep-box ul li {
+    font-size: 0.83rem;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.4;
+    color: #3e2723;
+  }
+  .konsep-box.hijau ul li { color: #1b3a1f; }
+  .konsep-box ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--hijau-muda);
+  }
+  .konsep-box.coklat ul li::before { color: #a1887f; }
+
+  /* ===== PERTANYAAN / SOAL ===== */
+  .soal-item {
+    margin-bottom: 22px;
+    padding: 18px;
+    background: #f9f9f9;
+    border-radius: 14px;
+    border-left: 4px solid var(--hijau-muda);
+  }
+  .soal-label {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .soal-num {
+    background: var(--hijau);
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .soal-question {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #1b3a1f;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .soal-hint {
+    font-size: 0.78rem;
+    color: #78909c;
+    font-style: italic;
+    margin-bottom: 8px;
+    padding-left: 38px;
+  }
+  textarea.jawaban {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.93rem;
+    line-height: 1.6;
+    color: #1b3a1f;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  textarea.jawaban:focus {
+    border-color: var(--hijau);
+    background: #f1f8e9;
+  }
+
+  /* ===== TABEL ===== */
+  .tabel-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+  }
+  table.lkpd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  table.lkpd-table thead tr {
+    background: var(--hijau-tua);
+    color: white;
+  }
+  table.lkpd-table th {
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.83rem;
+    letter-spacing: 0.3px;
+  }
+  table.lkpd-table tbody tr:nth-child(even) { background: #f1f8e9; }
+  table.lkpd-table tbody tr:nth-child(odd) { background: white; }
+  table.lkpd-table td {
+    padding: 8px 12px;
+    vertical-align: top;
+    border-top: 1px solid #e0e0e0;
+  }
+  table.lkpd-table td input, table.lkpd-table td textarea {
+    width: 100%;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    background: transparent;
+    min-height: 60px;
+    resize: vertical;
+  }
+  table.lkpd-table td input:focus, table.lkpd-table td textarea:focus {
+    border-color: var(--hijau);
+    background: white;
+  }
+
+  /* ===== REFLEKSI ===== */
+  .refleksi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .refleksi-card {
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    border: 2px solid;
+    transition: transform 0.15s;
+  }
+  .refleksi-card:hover { transform: translateY(-2px); }
+  .refleksi-card.r1 { border-color: #e53935; background: #ffebee; }
+  .refleksi-card.r2 { border-color: var(--kuning); background: #fff8e1; }
+  .refleksi-card.r3 { border-color: var(--hijau); background: #f1f8e9; }
+  .refleksi-emoji { font-size: 2rem; margin-bottom: 6px; }
+  .refleksi-label { font-size: 0.78rem; font-weight: 700; color: var(--abu); }
+  .refleksi-card input[type="radio"] { display: none; }
+  .refleksi-card label {
+    cursor: pointer;
+    display: block;
+  }
+  .refleksi-card input[type="radio"]:checked + label .refleksi-emoji {
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.3));
+    transform: scale(1.2);
+    display: block;
+    transition: transform 0.2s;
+  }
+
+  /* ===== AKSI NYATA ===== */
+  .aksi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .aksi-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    background: #f1f8e9;
+    border-radius: 12px;
+    border: 2px solid var(--hijau-terang);
+  }
+  .aksi-item input[type="checkbox"] {
+    width: 20px; height: 20px;
+    accent-color: var(--hijau);
+    flex-shrink: 0;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+  .aksi-item label {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    cursor: pointer;
+    color: #1b3a1f;
+  }
+
+  /* ===== TOMBOL ===== */
+  .btn-group {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px dashed var(--hijau-terang);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-simpan {
+    background: var(--hijau);
+    color: white;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.35);
+  }
+  .btn-simpan:hover {
+    background: var(--hijau-tua);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46,125,50,0.4);
+  }
+  .btn-pdf {
+    background: var(--coklat);
+    color: white;
+    box-shadow: 0 4px 16px rgba(109,76,65,0.35);
+  }
+  .btn-pdf:hover {
+    background: #4e342e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(109,76,65,0.4);
+  }
+  .btn-reset {
+    background: white;
+    color: var(--merah);
+    border: 2px solid var(--merah);
+  }
+  .btn-reset:hover {
+    background: #ffebee;
+    transform: translateY(-2px);
+  }
+
+  /* ===== NOTIFIKASI ===== */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--hijau-tua);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 28px 20px;
+    color: var(--abu);
+    font-size: 0.82rem;
+    border-top: 1px solid #c8e6c9;
+  }
+  footer strong { color: var(--hijau-tua); }
+
+  /* ===== ORNAMEN ===== */
+  .leaf-divider {
+    text-align: center;
+    color: var(--hijau-terang);
+    font-size: 1.4rem;
+    margin: 6px 0 16px;
+    letter-spacing: 6px;
+  }
+
+  /* === RATING BINTANG === */
+  .star-rating {
+    display: flex;
+    gap: 8px;
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  .star-rating span {
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.15s;
+  }
+  .star-rating span.active { color: var(--kuning); }
+
+  /* PRINT */
+  @media print {
+    header::before { display: none; }
+    .btn-group { display: none; }
+    .toast { display: none; }
+    body { background: white; }
+    .video-container {
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 120px;
+    }
+    .video-container::after {
+      content: '▶ Video: https://youtu.be/r_kNx6eM9r4';
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .video-container iframe { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid-3 { grid-template-columns: 1fr; }
+    .konsep-grid { grid-template-columns: 1fr; }
+    .refleksi-grid { grid-template-columns: 1fr; }
+    .aksi-grid { grid-template-columns: 1fr; }
+    .tugas-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <header>
-            <h1>📚 LKPD - Bencana Longsor & Reboisasi</h1>
-            <p class="subtitle">Ekologi, Keanekaragaman Hayati, dan Pelestarian Lingkungan</p>
-        </header>
 
-        <!-- NAVIGATION TABS -->
-        <div class="nav-tabs">
-            <button class="tab-button active" data-tab="info">Informasi</button>
-            <button class="tab-button" data-tab="video">Video & Pemahaman</button>
-            <button class="tab-button" data-tab="ekologi">Ekologi</button>
-            <button class="tab-button" data-tab="reboisasi">Reboisasi</button>
-            <button class="tab-button" data-tab="aksi">Aksi Nyata</button>
-            <button class="tab-button" data-tab="evaluasi">Evaluasi</button>
-        </div>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="badge-lkpd">📄 LKPD IPA – KERJA KELOMPOK</div>
+    <h1>Bencana <span>Longsor</span> &amp; Pentingnya<br>Reboisasi untuk Kehidupan</h1>
+    <p class="header-sub">Ekologi • Keanekaragaman Hayati • Kesadaran Lingkungan</p>
+    <div class="header-meta">
+      <span class="meta-chip">🏫 SMP/MTs</span>
+      <span class="meta-chip">📚 IPA Kelas VII</span>
+      <span class="meta-chip">⏱ 80 Menit</span>
+      <span class="meta-chip">👥 Kerja Kelompok</span>
+      <span class="meta-chip">👤 3–5 Anggota</span>
+    </div>
+  </div>
+</header>
 
-        <!-- MAIN CONTENT -->
-        <div class="content">
-            <!-- TAB 1: INFO & TUJUAN -->
-            <section id="info" class="section active">
-                <h2>📋 Informasi Peserta Didik</h2>
-                <p class="section-subtitle">Silakan isi data diri Anda terlebih dahulu</p>
+<div class="wrapper">
 
-                <div class="student-info">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>Nama:</label>
-                            <input type="text" placeholder="Masukkan nama lengkap" id="nama">
-                        </div>
-                        <div class="info-item">
-                            <label>Kelas:</label>
-                            <input type="text" placeholder="Contoh: X IPA 1" id="kelas">
-                        </div>
-                        <div class="info-item">
-                            <label>No. Absen:</label>
-                            <input type="number" placeholder="Nomor absen" id="absen">
-                        </div>
-                        <div class="info-item">
-                            <label>Tanggal:</label>
-                            <input type="date" id="tanggal">
-                        </div>
-                    </div>
-                </div>
+  <!-- IDENTITAS KELOMPOK -->
+  <div class="card-identitas">
+    <h2>Identitas Kelompok</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nama Kelompok</label>
+        <input type="text" id="namaKelompok" placeholder="Contoh: Kelompok Hijau / Kelompok 3">
+      </div>
+      <div class="form-group">
+        <label>Kelas / Rombel</label>
+        <input type="text" id="kelas" placeholder="Contoh: VII A">
+      </div>
+      <div class="form-group">
+        <label>Nama Guru</label>
+        <input type="text" id="guru" placeholder="Nama guru pengampu">
+      </div>
+      <div class="form-group">
+        <label>Sekolah</label>
+        <input type="text" id="sekolah" placeholder="Nama sekolah">
+      </div>
+      <div class="form-group">
+        <label>Tanggal Pengerjaan</label>
+        <input type="date" id="tanggal">
+      </div>
+      <div class="form-group">
+        <label>Jumlah Anggota</label>
+        <select id="jumlahAnggota" onchange="updateAnggota()">
+          <option value="3">3 Anggota</option>
+          <option value="4" selected>4 Anggota</option>
+          <option value="5">5 Anggota</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-                <h3 style="color: var(--primary); margin-top: 40px;">🎯 Petunjuk Penggunaan LKPD</h3>
-                <div class="question-block">
-                    <ol style="margin-left: 20px;">
-                        <li style="margin-bottom: 10px;">Pelajari video tayangan tentang bencana longsor dengan seksama</li>
-                        <li style="margin-bottom: 10px;">Jawab semua pertanyaan sesuai dengan pemahaman Anda</li>
-                        <li style="margin-bottom: 10px;">Diskusikan jawaban dengan teman sekelompok</li>
-                        <li>Gunakan berbagai sumber belajar untuk memperkaya jawaban</li>
-                    </ol>
-                </div>
+  <!-- PEMBAGIAN TUGAS KELOMPOK -->
+  <div class="card-tugas">
+    <h2>👥 Pembagian Tugas Anggota Kelompok</h2>
+    <p class="desc">Isi nama setiap anggota kelompok, peran mereka, dan tugas spesifik yang akan dikerjakan. Pastikan semua anggota mendapat bagian yang adil dan jelas!</p>
 
-                <div class="learning-objectives">
-                    <h3>🎓 Tujuan Pembelajaran</h3>
-                    <p>Setelah menyelesaikan LKPD ini, peserta didik diharapkan dapat:</p>
-                    <ul>
-                        <li>Memahami penyebab dan dampak bencana longsor bagi lingkungan</li>
-                        <li>Mengenal peran vegetasi dalam mencegah erosi dan longsor</li>
-                        <li>Memahami konsep ekologi dan keanekaragaman hayati</li>
-                        <li>Mengidentifikasi peluang dan strategi reboisasi</li>
-                        <li>Menunjukkan kesadaran dan komitmen menjaga kelestarian lingkungan</li>
-                        <li>Merancang rencana aksi nyata untuk pelestarian lingkungan</li>
-                    </ul>
-                </div>
-
-                <div class="button-group" style="margin-top: 30px;">
-                    <button class="btn-success" onclick="downloadPDF('info')">📥 Download Halaman Ini (PDF)</button>
-                    <button class="btn-primary" onclick="downloadAllPDF()">📥 Download Semua Halaman (PDF)</button>
-                </div>
-            </section>
-
-            <!-- TAB 2: VIDEO & PEMAHAMAN -->
-            <section id="video" class="section">
-                <h2>🎬 Pemahaman Video: Bencana Longsor</h2>
-                <p class="section-subtitle">Analisis tayangan video tentang bencana longsor</p>
-
-                <div style="margin: 30px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <iframe width="100%" height="450" src="https://www.youtube.com/embed/r_kNx6eM9r4" title="Bencana Longsor" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-
-                <div class="alert alert-info" style="margin-top: 20px;">
-                    <strong>👀 Instruksi:</strong> Tonton video di atas dengan seksama, perhatikan penyebab, dampak, dan cara mencegah bencana longsor. Kemudian jawab semua pertanyaan di bawah.
-                </div>
-
-                <div class="button-group" style="margin: 20px 0;">
-                    <button class="btn-success" onclick="downloadPDF('video')">📥 Download Halaman Ini (PDF)</button>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">1</span> Pengalaman Menonton</h3>
-                    <p>Apa yang Anda lihat dan dengarkan dalam video tentang bencana longsor? Jelaskan pengalaman yang paling berkesan bagi Anda.</p>
-                    <textarea class="answer-box" placeholder="Tulis jawaban Anda di sini..." rows="5"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">2</span> Penyebab Longsor</h3>
-                    <p>Apa saja penyebab utama terjadinya longsor menurut video? Sebutkan minimal 3 penyebab dan jelaskan masing-masing.</p>
-                    <textarea class="answer-box" placeholder="1. ...\n2. ...\n3. ..." rows="6"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">3</span> Dampak Negatif</h3>
-                    <p>Apa dampak negatif dari bencana longsor terhadap masyarakat dan lingkungan?</p>
-                    <textarea class="answer-box" placeholder="Dampak terhadap masyarakat:\nDampak terhadap lingkungan:" rows="6"></textarea>
-                </div>
-
-                <div class="question-block important">
-                    <h3><span class="question-number">4</span> Analisis Kritis</h3>
-                    <p>Menurut Anda, apakah bencana longsor dapat dicegah sepenuhnya atau hanya dapat dikurangi risikonya? Jelaskan alasan Anda dengan logis!</p>
-                    <textarea class="answer-box" placeholder="Tulis analisis Anda..." rows="6"></textarea>
-                </div>
-
-                <div class="alert alert-info">
-                    <strong>💡 Tips:</strong> Jawab berdasarkan apa yang Anda pahami dari video. Jika memungkinkan, hubungkan dengan pengetahuan Anda tentang lingkungan dan alam.
-                </div>
-            </section>
-
-            <!-- TAB 3: EKOLOGI -->
-            <section id="ekologi" class="section">
-                <h2>🌍 Ekologi dan Keanekaragaman Hayati</h2>
-                <p class="section-subtitle">Memahami konsep dasar ekologi dan pentingnya keanekaragaman</p>
-
-                <div class="question-block">
-                    <h3><span class="question-number">1</span> Pengertian Ekologi</h3>
-                    <p>Jelaskan pengertian ekologi dan bagaimana hubungannya dengan bencana longsor!</p>
-                    <textarea class="answer-box" placeholder="Pengertian ekologi:\nHubungan dengan longsor:" rows="6"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">2</span> Keanekaragaman Hayati</h3>
-                    <p>Apa yang dimaksud dengan keanekaragaman hayati? Sebutkan contoh keanekaragaman hayati di lingkungan sekitar sekolah Anda!</p>
-                    <textarea class="answer-box" placeholder="Pengertian:\nContoh di sekitar sekolah:" rows="6"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">3</span> Keanekaragaman Hayati & Pencegahan Longsor</h3>
-                    <p>Bagaimana keanekaragaman hayati dapat membantu mencegah atau mengurangi risiko longsor?</p>
-                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="5"></textarea>
-                </div>
-
-                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">📊 Komponen Ekosistem</h3>
-                <p style="margin-bottom: 20px;">Isilah tabel di bawah tentang komponen ekosistem pada lahan yang rawan longsor:</p>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Komponen Ekosistem</th>
-                                <th>Contoh</th>
-                                <th>Peran dalam Pencegahan Longsor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Produsen</strong></td>
-                                <td><input type="text" class="input-field" placeholder="Contoh: pohon, rumput"></td>
-                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Konsumen I (Herbivora)</strong></td>
-                                <td><input type="text" class="input-field" placeholder="Contoh: serangga, burung"></td>
-                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Konsumen II (Karnivora)</strong></td>
-                                <td><input type="text" class="input-field" placeholder="Contoh: elang, ular"></td>
-                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Pengurai</strong></td>
-                                <td><input type="text" class="input-field" placeholder="Contoh: bakteri, jamur"></td>
-                                <td><input type="text" class="input-field" placeholder="Jelaskan perannya"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="alert alert-success">
-                    <strong>✓ Penting:</strong> Setiap komponen ekosistem memiliki peran penting dalam menjaga keseimbangan alam dan mencegah bencana alam seperti longsor.
-                </div>
-
-                <div class="button-group" style="margin-top: 30px;">
-                    <button class="btn-success" onclick="downloadPDF('ekologi')">📥 Download Halaman Ini (PDF)</button>
-                </div>
-            </section>
-
-            <!-- TAB 4: REBOISASI -->
-            <section id="reboisasi" class="section">
-                <h2>🌳 Peran Reboisasi dalam Pelestarian Lingkungan</h2>
-                <p class="section-subtitle">Memahami pentingnya penanaman kembali pohon</p>
-
-                <div class="question-block">
-                    <h3><span class="question-number">1</span> Pentingnya Reboisasi</h3>
-                    <p>Jelaskan mengapa reboisasi sangat penting untuk mencegah bencana longsor!</p>
-                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="6"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">2</span> Manfaat Reboisasi</h3>
-                    <p>Apa manfaat reboisasi selain mencegah longsor? Sebutkan minimal 5 manfaat dan jelaskan!</p>
-                    <textarea class="answer-box" placeholder="1. ...\n2. ...\n3. ...\n4. ...\n5. ..." rows="8"></textarea>
-                </div>
-
-                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">🌲 Jenis-Jenis Pohon untuk Reboisasi</h3>
-                <p style="margin-bottom: 20px;">Lengkapilah tabel berikut dengan jenis-jenis pohon yang cocok untuk reboisasi di daerah rawan longsor:</p>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Pohon</th>
-                                <th>Nama Ilmiah</th>
-                                <th>Manfaat</th>
-                                <th>Lokasi Terbaik</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td><input type="text" class="input-field" placeholder="Contoh: Pohon Pinus"></td>
-                                <td><input type="text" class="input-field" placeholder="Contoh: Pinus merkusii"></td>
-                                <td><input type="text" class="input-field" placeholder="Memperkuat akar tanah"></td>
-                                <td><input type="text" class="input-field" placeholder="Lahan berbukit"></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                                <td><input type="text" class="input-field"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="alert alert-warning">
-                    <strong>⚠️ Catatan:</strong> Pilih jenis pohon yang sesuai dengan iklim dan kondisi tanah lokal Anda untuk hasil reboisasi yang optimal.
-                </div>
-
-                <div class="button-group" style="margin-top: 30px;">
-                    <button class="btn-success" onclick="downloadPDF('reboisasi')">📥 Download Halaman Ini (PDF)</button>
-                </div>
-            </section>
-
-            <!-- TAB 5: AKSI NYATA -->
-            <section id="aksi" class="section">
-                <h2>✊ Kesadaran Lingkungan dan Aksi Nyata</h2>
-                <p class="section-subtitle">Refleksi diri dan perencanaan aksi konkret untuk lingkungan</p>
-
-                <h3 style="color: var(--primary); margin-bottom: 20px;">🤔 Refleksi Diri</h3>
-
-                <div class="question-block">
-                    <h3><span class="question-number">1</span> Perasaan Setelah Menonton</h3>
-                    <p>Bagaimana perasaan Anda setelah menonton video tentang bencana longsor? Apa yang membuat Anda merasa tersentuh?</p>
-                    <textarea class="answer-box" placeholder="Tulis perasaan Anda..." rows="5"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">2</span> Tanggung Jawab Generasi Muda</h3>
-                    <p>Apa tanggung jawab Anda sebagai generasi muda dalam menjaga kelestarian lingkungan?</p>
-                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="5"></textarea>
-                </div>
-
-                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">📋 Rencana Aksi Reboisasi & Pelestarian</h3>
-                <p style="margin-bottom: 20px;">Buatlah rencana aksi Anda untuk berkontribusi dalam reboisasi dan pelestarian lingkungan:</p>
-
-                <div class="question-block">
-                    <h3><span class="question-number">3</span> Tujuan Aksi</h3>
-                    <p>Apa tujuan aksi yang akan Anda lakukan?</p>
-                    <textarea class="answer-box" placeholder="Contoh: Menanam 50 pohon di area rawan longsor..." rows="4"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">4</span> Pihak yang Terlibat</h3>
-                    <p>Siapa saja yang akan terlibat dalam aksi ini? (teman, keluarga, komunitas, sekolah, dll)</p>
-                    <textarea class="answer-box" placeholder="Teman sekelas, keluarga, guru, komunitas lingkungan..." rows="4"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">5</span> Kegiatan Konkret</h3>
-                    <p>Apa saja yang akan Anda lakukan secara konkret? (jelaskan langkah-langkah detail)</p>
-                    <textarea class="answer-box" placeholder="Langkah 1: ...\nLangkah 2: ...\nLangkah 3: ..." rows="6"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">6</span> Evaluasi Keberhasilan</h3>
-                    <p>Bagaimana Anda akan mengevaluasi keberhasilan aksi Anda?</p>
-                    <textarea class="answer-box" placeholder="Indikator keberhasilan:\nCara mengukur:\nTarget yang ingin dicapai:" rows="5"></textarea>
-                </div>
-
-                <div class="highlight-box">
-                    <strong>🌟 Bentuk Kampanye Kesadaran yang Bisa Anda Pilih:</strong>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="poster">
-                            <label for="poster">Poster edukasi tentang longsor & reboisasi</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="video">
-                            <label for="video">Video edukasi singkat (2-3 menit)</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="ppt">
-                            <label for="ppt">Presentasi PowerPoint tentang ekologi</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="brosur">
-                            <label for="brosur">Brosur informatif program reboisasi</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="tanam">
-                            <label for="tanam">Kegiatan penanaman pohon nyata</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question-block">
-                    <h3>Bentuk Kampanye yang Dipilih Kelompok Anda</h3>
-                    <textarea class="answer-box" placeholder="Tulis pilihan Anda..." rows="4"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3>Rencana Pelaksanaan</h3>
-                    <textarea class="answer-box" placeholder="Kapan, di mana, dan bagaimana pelaksanaannya..." rows="5"></textarea>
-                </div>
-
-                <div class="button-group" style="margin-top: 30px;">
-                    <button class="btn-success" onclick="downloadPDF('aksi')">📥 Download Halaman Ini (PDF)</button>
-                </div>
-            </section>
-
-            <!-- TAB 6: EVALUASI -->
-            <section id="evaluasi" class="section">
-                <h2>📊 Evaluasi dan Refleksi Diri</h2>
-                <p class="section-subtitle">Penilaian pemahaman dan refleksi akhir pembelajaran</p>
-
-                <h3 style="color: var(--primary); margin-bottom: 20px;">✓ Penilaian Pemahaman Anda</h3>
-                <p style="margin-bottom: 20px;">Berilah tanda pada kolom yang sesuai dengan pemahaman Anda:</p>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Aspek Pembelajaran</th>
-                                <th>Sudah Mengerti</th>
-                                <th>Sedang Belajar</th>
-                                <th>Masih Bingung</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Memahami penyebab terjadinya longsor</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Memahami dampak longsor terhadap lingkungan</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Memahami peran vegetasi dalam mencegah longsor</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Memahami konsep ekologi</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Memahami keanekaragaman hayati</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Memahami pentingnya reboisasi</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Memiliki kesadaran menjaga lingkungan</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                            <tr>
-                                <td>Mampu merancang rencana aksi nyata</td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h3 style="color: var(--primary); margin-top: 40px; margin-bottom: 20px;">💭 Refleksi Akhir</h3>
-
-                <div class="question-block">
-                    <h3><span class="question-number">1</span> Pembelajaran Terpenting</h3>
-                    <p>Apa pembelajaran terpenting yang Anda dapatkan dari LKPD ini?</p>
-                    <textarea class="answer-box" placeholder="Tulis jawaban Anda..." rows="5"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">2</span> Perubahan Sikap & Perilaku</h3>
-                    <p>Bagaimana Anda akan mengubah sikap dan perilaku Anda untuk menjaga lingkungan setelah menyelesaikan LKPD ini?</p>
-                    <textarea class="answer-box" placeholder="Tulis komitmen Anda..." rows="5"></textarea>
-                </div>
-
-                <div class="question-block">
-                    <h3><span class="question-number">3</span> Saran Perbaikan</h3>
-                    <p>Apa saran Anda untuk meningkatkan kesadaran lingkungan di sekolah atau komunitas Anda?</p>
-                    <textarea class="answer-box" placeholder="Tulis saran Anda..." rows="5"></textarea>
-                </div>
-
-                <div class="highlight-box" style="margin-top: 40px;">
-                    <strong>🌱 Pesan Inspirasi:</strong>
-                    <p style="margin-top: 10px;">Setiap tindakan kecil yang Anda lakukan untuk lingkungan memiliki dampak besar. Jadilah agen perubahan untuk masa depan yang lebih hijau! 🌍💚</p>
-                </div>
-
-                <div class="button-group" style="margin-top: 30px;">
-                    <button class="btn-success" onclick="simpanData()">💾 Simpan Jawaban Saya</button>
-                    <button class="btn-success" onclick="downloadPDF('evaluasi')">📥 Download Halaman Ini (PDF)</button>
-                    <button class="btn-primary" onclick="downloadAllPDF()">📥 Download Semua Halaman (PDF)</button>
-                    <button class="btn-primary" onclick="cetakLKPD()">🖨️ Cetak LKPD</button>
-                    <button class="btn-secondary" onclick="resetForm()">↻ Ulang Pengisian</button>
-                </div>
-            </section>
-        </div>
-
-        <!-- FOOTER -->
-        <footer>
-            <p><strong>LKPD - Bencana Longsor & Reboisasi</strong></p>
-            <p>Mata Pelajaran: Biologi | Topik: Ekologi dan Keanekaragaman Hayati</p>
-            <p style="margin-top: 15px; font-size: 0.9em;">📝 Semoga LKPD ini menginspirasi Anda untuk menjaga kelestarian lingkungan kita bersama! 🌳</p>
-        </footer>
+    <!-- Tabel Daftar Anggota -->
+    <div class="tabel-wrapper" style="border-color:#e1bee7;">
+      <table class="tabel-anggota" id="tabelAnggota">
+        <thead>
+          <tr>
+            <th style="width:42px; text-align:center;">No</th>
+            <th>Nama Lengkap Anggota</th>
+            <th>Peran / Jabatan</th>
+            <th>Bagian Tugas yang Dikerjakan</th>
+          </tr>
+        </thead>
+        <tbody id="bodyAnggota">
+          <!-- Diisi oleh JavaScript -->
+        </tbody>
+      </table>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        // TAB NAVIGATION
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const sections = document.querySelectorAll('.section');
+    <!-- Tugas Detail Per Anggota -->
+    <div class="section-divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">📋 Rincian Tugas Diskusi</div>
+      <div class="divider-line" style="background: linear-gradient(to left, #ce93d8, transparent);"></div>
+    </div>
 
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.getAttribute('data-tab');
+    <div class="tugas-grid" id="tugasGrid">
+      <!-- Diisi oleh JavaScript -->
+    </div>
 
-                // Remove active from all
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                sections.forEach(section => section.classList.remove('active'));
+    <!-- Checklist Progress Kelompok -->
+    <div class="progress-wrapper">
+      <h4>✅ Checklist Progress Kelompok — Centang saat sudah selesai:</h4>
+      <div class="progress-items">
+        <div class="progress-item">
+          <input type="checkbox" id="prog1"><label for="prog1">Semua anggota sudah menonton video bencana longsor</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog2"><label for="prog2">Pembagian tugas sudah disepakati bersama</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog3"><label for="prog3">Bagian A (Mengamati Video) selesai dikerjakan</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog4"><label for="prog4">Bagian B (Analisis Ekologi) selesai dikerjakan</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog5"><label for="prog5">Bagian C (Solusi Reboisasi) selesai dikerjakan</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog6"><label for="prog6">Tabel dampak ekosistem sudah dilengkapi semua baris</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog7"><label for="prog7">Refleksi kelompok sudah diisi dengan jujur</label>
+        </div>
+        <div class="progress-item">
+          <input type="checkbox" id="prog8"><label for="prog8">Seluruh jawaban sudah didiskusikan bersama sebelum ditulis</label>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                // Add active to clicked
-                button.classList.add('active');
-                document.getElementById(tabName).classList.add('active');
+  <!-- TUJUAN PEMBELAJARAN (KAIDAH ABCD) -->
+  <div class="section-card card-green">
+    <div class="leaf-divider">🌿 🍃 🌿</div>
+    <h2>🎯 Tujuan Pembelajaran</h2>
+    <p class="section-desc">Tujuan pembelajaran disusun menggunakan <strong>Kaidah ABCD</strong>: <span style="color:#1a5c2a; font-weight:800;">A</span>udience (siapa yang belajar) · <span style="color:#1a5c2a; font-weight:800;">B</span>ehavior (kemampuan yang ditunjukkan) · <span style="color:#1a5c2a; font-weight:800;">C</span>ondition (kondisi/situasi belajar) · <span style="color:#1a5c2a; font-weight:800;">D</span>egree (tingkat keberhasilan)</p>
 
-                // Scroll to top
-                document.querySelector('.content').scrollTop = 0;
-            });
-        });
+    <!-- Legenda ABCD -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px;">
+      <div style="background:#e8f5e9; border:2px solid #4caf50; border-radius:12px; padding:12px; text-align:center;">
+        <div style="font-size:1.6rem; font-weight:900; color:#1a5c2a; font-family:'Merriweather',serif;">A</div>
+        <div style="font-size:0.75rem; font-weight:800; color:#2e7d32; margin-top:2px;">Audience</div>
+        <div style="font-size:0.72rem; color:#546e7a; margin-top:4px; line-height:1.4;">Siapa yang melakukan</div>
+      </div>
+      <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:12px; text-align:center;">
+        <div style="font-size:1.6rem; font-weight:900; color:#e65100; font-family:'Merriweather',serif;">B</div>
+        <div style="font-size:0.75rem; font-weight:800; color:#f57f17; margin-top:2px;">Behavior</div>
+        <div style="font-size:0.72rem; color:#546e7a; margin-top:4px; line-height:1.4;">Perilaku/kemampuan yang diharapkan</div>
+      </div>
+      <div style="background:#e3f2fd; border:2px solid #1565c0; border-radius:12px; padding:12px; text-align:center;">
+        <div style="font-size:1.6rem; font-weight:900; color:#1565c0; font-family:'Merriweather',serif;">C</div>
+        <div style="font-size:0.75rem; font-weight:800; color:#1565c0; margin-top:2px;">Condition</div>
+        <div style="font-size:0.72rem; color:#546e7a; margin-top:4px; line-height:1.4;">Situasi/kondisi saat belajar</div>
+      </div>
+      <div style="background:#fce4ec; border:2px solid #c62828; border-radius:12px; padding:12px; text-align:center;">
+        <div style="font-size:1.6rem; font-weight:900; color:#c62828; font-family:'Merriweather',serif;">D</div>
+        <div style="font-size:0.75rem; font-weight:800; color:#c62828; margin-top:2px;">Degree</div>
+        <div style="font-size:0.72rem; color:#546e7a; margin-top:4px; line-height:1.4;">Standar tingkat keberhasilan</div>
+      </div>
+    </div>
 
-        // Set today's date
-        document.getElementById('tanggal').valueAsDate = new Date();
+    <!-- Daftar Tujuan dengan ABCD -->
+    <div style="display:flex; flex-direction:column; gap:14px;">
 
-        // SIMPAN DATA
-        function simpanData() {
-            const nama = document.getElementById('nama').value;
-            const kelas = document.getElementById('kelas').value;
+      <!-- TP 1 -->
+      <div style="background:#f9fbe7; border-radius:14px; border-left:5px solid #4caf50; padding:16px; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:10px; right:14px; font-size:0.7rem; font-weight:800; color:#aaa; letter-spacing:1px;">TP – 01</div>
+        <div style="font-size:0.92rem; font-weight:700; color:#1b3a1f; line-height:1.6; margin-bottom:10px;">
+          🔍 Peserta didik kelas VII (kelompok 3–5 orang), setelah mengamati tayangan video bencana tanah longsor dan berdiskusi kelompok, mampu <strong>menyebutkan minimal 3 penyebab dan 3 akibat bencana longsor</strong> terhadap makhluk hidup dan lingkungannya dengan benar.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="background:#e8f5e9; color:#1a5c2a; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #a5d6a7;"><b>A</b> Peserta didik kelas VII</span>
+          <span style="background:#fff8e1; color:#e65100; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #ffe082;"><b>B</b> Menyebutkan penyebab &amp; akibat longsor</span>
+          <span style="background:#e3f2fd; color:#1565c0; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #90caf9;"><b>C</b> Setelah menonton video &amp; berdiskusi</span>
+          <span style="background:#fce4ec; color:#c62828; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #f48fb1;"><b>D</b> Min. 3 penyebab &amp; 3 akibat yang benar</span>
+        </div>
+      </div>
 
-            if (!nama || !kelas) {
-                alert('Silakan isi nama dan kelas Anda terlebih dahulu!');
-                return;
-            }
+      <!-- TP 2 -->
+      <div style="background:#f9fbe7; border-radius:14px; border-left:5px solid #2e7d32; padding:16px; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:10px; right:14px; font-size:0.7rem; font-weight:800; color:#aaa; letter-spacing:1px;">TP – 02</div>
+        <div style="font-size:0.92rem; font-weight:700; color:#1b3a1f; line-height:1.6; margin-bottom:10px;">
+          🌱 Peserta didik kelas VII (kelompok 3–5 orang), setelah menganalisis konsep ekologi yang tersedia dalam LKPD, mampu <strong>menjelaskan peran akar tumbuhan dalam menahan tanah</strong> dan dampak penebangan pohon terhadap risiko longsor secara runtut dan logis.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="background:#e8f5e9; color:#1a5c2a; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #a5d6a7;"><b>A</b> Peserta didik kelas VII</span>
+          <span style="background:#fff8e1; color:#e65100; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #ffe082;"><b>B</b> Menjelaskan peran tumbuhan mencegah longsor</span>
+          <span style="background:#e3f2fd; color:#1565c0; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #90caf9;"><b>C</b> Setelah membaca konsep ekologi di LKPD</span>
+          <span style="background:#fce4ec; color:#c62828; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #f48fb1;"><b>D</b> Penjelasan runtut, logis, dan tepat</span>
+        </div>
+      </div>
 
-            // Collect all textarea values
-            const data = {
-                nama: nama,
-                kelas: kelas,
-                absen: document.getElementById('absen').value,
-                tanggal: document.getElementById('tanggal').value,
-                timestamp: new Date().toLocaleString('id-ID')
-            };
+      <!-- TP 3 -->
+      <div style="background:#f9fbe7; border-radius:14px; border-left:5px solid #00695c; padding:16px; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:10px; right:14px; font-size:0.7rem; font-weight:800; color:#aaa; letter-spacing:1px;">TP – 03</div>
+        <div style="font-size:0.92rem; font-weight:700; color:#1b3a1f; line-height:1.6; margin-bottom:10px;">
+          🦋 Peserta didik kelas VII (kelompok 3–5 orang), setelah mengisi tabel dampak longsor terhadap komponen ekosistem secara berkelompok, mampu <strong>menganalisis hubungan antara keanekaragaman makhluk hidup dengan ketahanan ekosistem</strong> menggunakan minimal 2 contoh nyata.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="background:#e8f5e9; color:#1a5c2a; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #a5d6a7;"><b>A</b> Peserta didik kelas VII</span>
+          <span style="background:#fff8e1; color:#e65100; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #ffe082;"><b>B</b> Menganalisis hubungan keanekaragaman &amp; ketahanan alam</span>
+          <span style="background:#e3f2fd; color:#1565c0; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #90caf9;"><b>C</b> Setelah mengisi tabel dampak ekosistem</span>
+          <span style="background:#fce4ec; color:#c62828; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #f48fb1;"><b>D</b> Disertai min. 2 contoh nyata yang tepat</span>
+        </div>
+      </div>
 
-            // Save to localStorage
-            localStorage.setItem('lkpdData_' + nama + '_' + new Date().getTime(), JSON.stringify(data));
-            alert('✓ Jawaban Anda telah disimpan!\n\nNama: ' + nama + '\nKelas: ' + kelas);
-        }
+      <!-- TP 4 -->
+      <div style="background:#f9fbe7; border-radius:14px; border-left:5px solid #e65100; padding:16px; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:10px; right:14px; font-size:0.7rem; font-weight:800; color:#aaa; letter-spacing:1px;">TP – 04</div>
+        <div style="font-size:0.92rem; font-weight:700; color:#1b3a1f; line-height:1.6; margin-bottom:10px;">
+          💡 Peserta didik kelas VII (kelompok 3–5 orang), setelah menyelesaikan bagian C tentang solusi reboisasi, mampu <strong>merancang minimal 5 tindakan nyata pencegahan longsor</strong> dan membuat slogan ajakan menanam pohon yang kreatif dan bermakna.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="background:#e8f5e9; color:#1a5c2a; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #a5d6a7;"><b>A</b> Peserta didik kelas VII</span>
+          <span style="background:#fff8e1; color:#e65100; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #ffe082;"><b>B</b> Merancang tindakan nyata &amp; slogan reboisasi</span>
+          <span style="background:#e3f2fd; color:#1565c0; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #90caf9;"><b>C</b> Setelah menyelesaikan bagian solusi LKPD</span>
+          <span style="background:#fce4ec; color:#c62828; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #f48fb1;"><b>D</b> Min. 5 tindakan + 1 slogan kreatif bermakna</span>
+        </div>
+      </div>
 
-        // DOWNLOAD PDF PER HALAMAN
-        function downloadPDF(tabName) {
-            const nama = document.getElementById('nama').value;
-            if (!nama) {
-                alert('Silakan isi nama Anda terlebih dahulu!');
-                return;
-            }
+      <!-- TP 5 -->
+      <div style="background:#f9fbe7; border-radius:14px; border-left:5px solid #7b1fa2; padding:16px; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:10px; right:14px; font-size:0.7rem; font-weight:800; color:#aaa; letter-spacing:1px;">TP – 05</div>
+        <div style="font-size:0.92rem; font-weight:700; color:#1b3a1f; line-height:1.6; margin-bottom:10px;">
+          🤝 Peserta didik kelas VII (kelompok 3–5 orang), selama proses pengerjaan LKPD secara berkelompok, mampu <strong>menunjukkan sikap kerja sama, tanggung jawab atas tugas yang dibagi, dan kepedulian terhadap lingkungan</strong> dengan aktif berkontribusi pada setiap bagian yang ditugaskan.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="background:#e8f5e9; color:#1a5c2a; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #a5d6a7;"><b>A</b> Peserta didik kelas VII</span>
+          <span style="background:#fff8e1; color:#e65100; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #ffe082;"><b>B</b> Menunjukkan kerja sama &amp; tanggung jawab</span>
+          <span style="background:#e3f2fd; color:#1565c0; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #90caf9;"><b>C</b> Selama proses pengerjaan LKPD berkelompok</span>
+          <span style="background:#fce4ec; color:#c62828; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid #f48fb1;"><b>D</b> Aktif pada semua bagian yang ditugaskan</span>
+        </div>
+      </div>
 
-            const element = document.getElementById(tabName);
-            const opt = {
-                margin: 10,
-                filename: `LKPD_${tabName}_${nama}_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-            };
+    </div>
+  </div>
 
-            html2pdf().set(opt).from(element).save();
-        }
+  <!-- VIDEO -->
+  <div class="section-card card-brown">
+    <div class="section-num">1</div>
+    <h2>📺 Tayangan Video: Bencana Tanah Longsor</h2>
+    <p class="section-desc">Semua anggota kelompok menyaksikan video berikut bersama-sama. Masing-masing anggota mencatat hal-hal penting sesuai tugas yang telah dibagi. Diskusikan bersama sebelum menuliskan jawaban!</p>
 
-        // DOWNLOAD PDF SEMUA HALAMAN
-        function downloadAllPDF() {
-            const nama = document.getElementById('nama').value;
-            if (!nama) {
-                alert('Silakan isi nama Anda terlebih dahulu!');
-                return;
-            }
+    <div id="videoBox" style="border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.2); border:3px solid #a5d6a7; background:#000; position:relative;">
+      <div id="videoThumb" onclick="bukaTonton()" style="cursor:pointer; position:relative; width:100%; aspect-ratio:16/9; background:#1a1a1a; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <img
+          src="https://img.youtube.com/vi/r_kNx6eM9r4/hqdefault.jpg"
+          alt="Thumbnail video bencana longsor"
+          style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.75;"
+          onerror="this.style.display='none'"
+        >
+        <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%);"></div>
+        <div style="position:relative; z-index:2; background:rgba(220,30,30,0.92); border-radius:50%; width:72px; height:72px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,0.5);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div style="position:absolute; bottom:16px; left:16px; right:16px; z-index:2; text-align:left;">
+          <div style="color:white; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; text-shadow:0 1px 4px rgba(0,0,0,0.8);">🌧️ Bencana Tanah Longsor</div>
+          <div style="color:#a5d6a7; font-size:0.78rem; font-family:'Nunito',sans-serif; margin-top:3px;">Klik untuk menonton di YouTube ▶</div>
+        </div>
+      </div>
+      <div id="videoEmbed" style="display:none; width:100%; aspect-ratio:16/9;">
+        <iframe id="ytFrame" width="100%" height="100%" src="" title="Tayangan Longsor – LKPD IPA SMP" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="display:block;"></iframe>
+      </div>
+    </div>
 
-            const header = document.querySelector('header').cloneNode(true);
-            const content = document.querySelector('.content').cloneNode(true);
-            
-            const container = document.createElement('div');
-            container.appendChild(header);
-            container.appendChild(content);
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; justify-content:center;">
+      <a href="https://www.youtube.com/watch?v=r_kNx6eM9r4" target="_blank"
+        style="display:inline-flex; align-items:center; gap:8px; background:#dc3545; color:white; padding:10px 22px; border-radius:30px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; text-decoration:none; box-shadow:0 4px 14px rgba(220,53,69,0.4);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        Tonton di YouTube
+      </a>
+      <button onclick="cobaEmbed()" style="display:inline-flex; align-items:center; gap:8px; background:white; color:#2e7d32; border:2px solid #2e7d32; padding:10px 22px; border-radius:30px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; cursor:pointer;">
+        🖥️ Putar di Sini
+      </button>
+    </div>
+    <p style="text-align:center; font-size:0.78rem; color:#78909c; margin-top:8px; font-style:italic;">
+      💡 Jika video tidak muncul, klik <strong>"Tonton di YouTube"</strong> untuk membuka di tab baru.
+    </p>
+  </div>
 
-            const opt = {
-                margin: 10,
-                filename: `LKPD_Lengkap_${nama}_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-            };
+  <!-- PETA KONSEP -->
+  <div class="section-card card-teal">
+    <div class="section-num">2</div>
+    <h2>🗺️ Konsep Dasar yang Harus Dipahami Kelompok</h2>
+    <p class="section-desc">Baca dan diskusikan konsep-konsep berikut bersama kelompokmu sebelum menjawab pertanyaan:</p>
+    <div class="konsep-grid">
+      <div class="konsep-box hijau">
+        <h3>🌿 Ekologi</h3>
+        <ul>
+          <li>Ilmu yang mempelajari hubungan makhluk hidup dengan lingkungannya</li>
+          <li>Komponen hidup (biotik): hewan, tumbuhan, manusia</li>
+          <li>Komponen tak hidup (abiotik): air, tanah, udara, cahaya</li>
+          <li>Rantai makanan: siapa memakan siapa di alam</li>
+          <li>Ekosistem hutan menjaga keseimbangan alam</li>
+        </ul>
+      </div>
+      <div class="konsep-box coklat">
+        <h3>🦋 Keanekaragaman Hayati</h3>
+        <ul>
+          <li>Beragamnya makhluk hidup di bumi</li>
+          <li>Ada ragam gen, ragam jenis, ragam ekosistem</li>
+          <li>Indonesia kaya keanekaragaman hayati</li>
+          <li>Semakin beragam = semakin sehat ekosistemnya</li>
+          <li>Ancaman: penebangan hutan, perburuan liar</li>
+        </ul>
+      </div>
+      <div class="konsep-box hijau">
+        <h3>⛰️ Longsor &amp; Alam</h3>
+        <ul>
+          <li>Longsor = tanah atau batuan bergeser/turun</li>
+          <li>Penyebab: hujan deras, lereng curam, pohon ditebang</li>
+          <li>Akar pohon = penahan tanah alami yang kuat</li>
+          <li>Tanpa pohon → tanah mudah terkikis → longsor</li>
+          <li>Dampak: rumah rusak, hewan kehilangan rumah</li>
+        </ul>
+      </div>
+      <div class="konsep-box coklat">
+        <h3>🌳 Reboisasi</h3>
+        <ul>
+          <li>Menanam kembali pohon di lahan yang gundul</li>
+          <li>Mengembalikan fungsi hutan bagi alam</li>
+          <li>Mencegah banjir dan tanah longsor</li>
+          <li>Pohon menyerap CO₂ dan menghasilkan O₂</li>
+          <li>Membantu hewan liar mendapatkan rumahnya kembali</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-            html2pdf().set(opt).from(container).save();
-        }
+  <!-- BAGIAN A: LITERASI VIDEO -->
+  <div class="section-card card-green">
+    <div class="section-num">3</div>
+    <h2>🔎 Bagian A – Mengamati &amp; Memahami Video</h2>
+    <p class="section-desc">Jawablah pertanyaan berikut berdasarkan tayangan video. Diskusikan jawabannya dalam kelompok, lalu tulis menggunakan kalimat kelompokmu! Tag penanggung jawab bisa disesuaikan.</p>
 
-        // CETAK
-        function cetakLKPD() {
-            const nama = document.getElementById('nama').value;
-            if (!nama) {
-                alert('Silakan isi nama Anda terlebih dahulu!');
-                return;
-            }
-            window.print();
-        }
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">1</div>
+        <div class="soal-question">Apa yang kelompokmu lihat dalam video? Ceritakan kondisi lingkungan sebelum dan sesudah longsor terjadi!</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_a1" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">💡 Perhatikan keadaan lereng, pohon-pohon, rumah warga, dan tanah dalam video.</div>
+      <textarea class="jawaban" id="a1" placeholder="Tuliskan hasil diskusi kelompok di sini..."></textarea>
+    </div>
 
-        // RESET FORM
-        function resetForm() {
-            if (confirm('Apakah Anda yakin ingin menghapus semua jawaban? Tindakan ini tidak dapat dibatalkan!')) {
-                document.querySelectorAll('textarea').forEach(ta => ta.value = '');
-                document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
-                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-                alert('Form telah direset!');
-            }
-        }
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">2</div>
+        <div class="soal-question">Menurut kelompokmu, apa saja penyebab longsor yang terlihat dalam video? Sebutkan minimal 3 penyebab!</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_a2" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">💡 Pikirkan: bagaimana keadaan hujannya? Apakah ada pohon di lereng? Bagaimana kondisi tanahnya?</div>
+      <textarea class="jawaban" id="a2" placeholder="Tuliskan hasil diskusi kelompok di sini..."></textarea>
+    </div>
 
-        // Auto-save to localStorage every 30 seconds
-        setInterval(() => {
-            const nama = document.getElementById('nama').value;
-            if (nama) {
-                const textareas = document.querySelectorAll('textarea');
-                const answers = Array.from(textareas).map(ta => ta.value);
-                localStorage.setItem('autosave_' + nama, JSON.stringify(answers));
-            }
-        }, 30000);
-    </script>
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">3</div>
+        <div class="soal-question">Makhluk hidup apa saja yang terkena dampak bencana longsor dalam video? Bagaimana pengaruhnya terhadap hewan-hewan yang tinggal di sana?</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_a3" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">💡 Pikirkan: tumbuhan, hewan liar, hewan peliharaan, dan manusia yang tinggal di sekitar lokasi longsor.</div>
+      <textarea class="jawaban" id="a3" placeholder="Tuliskan hasil diskusi kelompok di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- BAGIAN B: ANALISIS EKOLOGI -->
+  <div class="section-card card-yellow">
+    <div class="section-num">4</div>
+    <h2>🌍 Bagian B – Analisis Ekologi &amp; Keanekaragaman Hayati</h2>
+    <p class="section-desc">Kaitkan fenomena longsor dengan konsep ekologi dan keanekaragaman hayati. Diskusikan bersama kelompok!</p>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">4</div>
+        <div class="soal-question">Mengapa pohon dan tumbuhan sangat penting untuk mencegah longsor? Apa yang terjadi pada tanah di lereng jika semua pohonnya ditebang?</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_b1" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">💡 Bayangkan apa fungsi akar pohon bagi tanah saat hujan deras.</div>
+      <textarea class="jawaban" id="b1" placeholder="Tuliskan hasil diskusi kelompok di sini..."></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">5</div>
+        <div class="soal-question">Hutan yang sehat memiliki banyak jenis tumbuhan dan hewan. Mengapa hutan yang beraneka ragam makhluk hidupnya lebih kuat menghadapi bencana dibanding lahan yang hanya ditanami satu jenis tanaman?</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_b2" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">💡 Bandingkan hutan lebat dengan kebun monokultur (satu jenis tanaman saja).</div>
+      <textarea class="jawaban" id="b2" placeholder="Tuliskan hasil diskusi kelompok di sini..."></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">6</div>
+        <div class="soal-question">Lengkapi tabel dampak longsor terhadap komponen ekosistem berikut ini: <span class="pj-tag">✍️ PJ Tabel: <select id="pj_tabel" class="pj-select"><option value="">Pilih anggota</option></select></span></div>
+      </div>
+      <div class="tabel-wrapper">
+        <table class="lkpd-table">
+          <thead>
+            <tr>
+              <th>Komponen Ekosistem</th>
+              <th>Kondisi Sebelum Longsor</th>
+              <th>Dampak Setelah Longsor</th>
+              <th>Cara Pemulihan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tanah (Abiotik)</strong></td>
+              <td><textarea id="t1a" placeholder="Kondisi tanah..."></textarea></td>
+              <td><textarea id="t1b" placeholder="Dampak pada tanah..."></textarea></td>
+              <td><textarea id="t1c" placeholder="Cara memulihkan..."></textarea></td>
+            </tr>
+            <tr>
+              <td><strong>Air / Sumber Air (Abiotik)</strong></td>
+              <td><textarea id="t2a" placeholder="Kondisi air..."></textarea></td>
+              <td><textarea id="t2b" placeholder="Dampak pada air..."></textarea></td>
+              <td><textarea id="t2c" placeholder="Cara memulihkan..."></textarea></td>
+            </tr>
+            <tr>
+              <td><strong>Tumbuhan (Biotik-Produsen)</strong></td>
+              <td><textarea id="t3a" placeholder="Kondisi tumbuhan..."></textarea></td>
+              <td><textarea id="t3b" placeholder="Dampak pada tumbuhan..."></textarea></td>
+              <td><textarea id="t3c" placeholder="Cara memulihkan..."></textarea></td>
+            </tr>
+            <tr>
+              <td><strong>Hewan / Satwa Liar (Biotik)</strong></td>
+              <td><textarea id="t4a" placeholder="Kondisi hewan..."></textarea></td>
+              <td><textarea id="t4b" placeholder="Dampak pada hewan..."></textarea></td>
+              <td><textarea id="t4c" placeholder="Cara memulihkan..."></textarea></td>
+            </tr>
+            <tr>
+              <td><strong>Manusia &amp; Permukiman</strong></td>
+              <td><textarea id="t5a" placeholder="Kondisi sebelumnya..."></textarea></td>
+              <td><textarea id="t5b" placeholder="Dampak bagi manusia..."></textarea></td>
+              <td><textarea id="t5c" placeholder="Cara memulihkan..."></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAGIAN C: REBOISASI -->
+  <div class="section-card card-green">
+    <div class="section-num">5</div>
+    <h2>🌱 Bagian C – Solusi: Reboisasi &amp; Pelestarian Lingkungan</h2>
+    <p class="section-desc">Setelah memahami dampak longsor, berpikirlah kritis sebagai kelompok tentang solusi yang bisa dilakukan!</p>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">7</div>
+        <div class="soal-question">Apa yang dimaksud dengan <strong>reboisasi</strong>? Tuliskan manfaat reboisasi bagi alam dan makhluk hidup di sekitarnya!</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_c1" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <textarea class="jawaban" id="c1" placeholder="Tuliskan hasil diskusi kelompok..."></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">8</div>
+        <div class="soal-question">Kalau kelompokmu tinggal di daerah lereng rawan longsor, apa saja yang bisa dilakukan untuk mencegah bencana? Tulis minimal <strong>5 tindakan</strong> nyata!</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_c2" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">💡 Diskusikan bersama: menanam pohon, tidak membuang sampah, melapor ke RT/RW, dll.</div>
+      <textarea class="jawaban" id="c2" style="min-height:120px" placeholder="1. &#10;2. &#10;3. &#10;4. &#10;5. "></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">9</div>
+        <div class="soal-question">Saat menanam pohon untuk reboisasi, lebih baik menanam pohon asli daerah setempat atau pohon dari luar daerah? Diskusikan dan jelaskan alasan kelompokmu!</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_c3" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <textarea class="jawaban" id="c3" placeholder="Tuliskan pilihan kelompok dan alasannya..."></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">10</div>
+        <div class="soal-question">Buat <strong>slogan ajakan menanam pohon</strong> terbaik dari kelompokmu, lalu jelaskan maknanya!</div>
+        <span class="pj-tag">✍️ PJ: <select id="pj_c4" class="pj-select"><option value="">Pilih anggota</option></select></span>
+      </div>
+      <div class="soal-hint">🎨 Jadilah kreatif! Ciptakan slogan yang mudah diingat dan bermakna mendalam.</div>
+      <textarea class="jawaban" id="c4" placeholder="Slogan kelompok kami: &#10;Artinya: "></textarea>
+    </div>
+  </div>
+
+  <!-- BAGIAN D: SIKAP & AKSI NYATA -->
+  <div class="section-card card-indigo">
+    <div class="section-num">6</div>
+    <h2>💚 Bagian D – Aksi Nyata &amp; Komitmen Kelompok</h2>
+    <p class="section-desc">Kesadaran tanpa tindakan tidak akan mengubah apa pun. Wujudkan kepedulian kelompokmu dalam aksi nyata!</p>
+
+    <p style="font-weight:700; margin-bottom:12px; color:#283593;">✅ Centang aksi nyata yang akan dilakukan kelompok untuk menjaga lingkungan:</p>
+    <div class="aksi-grid">
+      <div class="aksi-item">
+        <input type="checkbox" id="ak1">
+        <label for="ak1">🌱 Menanam minimal 1 pohon di sekitar rumah atau sekolah</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak2">
+        <label for="ak2">♻️ Tidak membuang sampah sembarangan, terutama di lereng/sungai</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak3">
+        <label for="ak3">💧 Membuat lubang biopori di pekarangan untuk menyerap air hujan</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak4">
+        <label for="ak4">📢 Mengajak keluarga dan teman untuk ikut menjaga lingkungan</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak5">
+        <label for="ak5">🌿 Merawat tanaman yang ada di rumah atau lingkungan sekitar</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak6">
+        <label for="ak6">📸 Membagikan informasi tentang pentingnya reboisasi di media sosial</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak7">
+        <label for="ak7">🚫 Tidak menebang pohon sembarangan di hutan atau lereng</label>
+      </div>
+      <div class="aksi-item">
+        <input type="checkbox" id="ak8">
+        <label for="ak8">🎓 Bergabung dalam kegiatan kelompok peduli lingkungan di sekolah</label>
+      </div>
+    </div>
+
+    <div class="soal-item" style="margin-top:20px">
+      <div class="soal-label">
+        <div class="soal-num">11</div>
+        <div class="soal-question">Tuliskan komitmen kelompokmu! Satu rencana aksi konkret yang paling mungkin dilakukan bersama mulai minggu ini untuk berkontribusi mencegah kerusakan lingkungan:</div>
+      </div>
+      <textarea class="jawaban" id="d1" style="min-height:80px" placeholder="Komitmen kelompok kami adalah..."></textarea>
+    </div>
+  </div>
+
+  <!-- REFLEKSI KELOMPOK -->
+  <div class="section-card card-yellow">
+    <div class="section-num">7</div>
+    <h2>🤔 Refleksi Belajar Kelompok</h2>
+    <p class="section-desc">Luangkan waktu bersama untuk merenungkan pengalaman belajar dan kerja kelompok hari ini.</p>
+
+    <p style="font-weight:700; margin-bottom:12px;">Bagaimana perasaan kelompokmu setelah mempelajari materi ini?</p>
+    <div class="refleksi-grid">
+      <div class="refleksi-card r1">
+        <input type="radio" name="mood" id="m1" value="Masih bingung">
+        <label for="m1">
+          <div class="refleksi-emoji">😕</div>
+          <div class="refleksi-label">Masih Bingung</div>
+        </label>
+      </div>
+      <div class="refleksi-card r2">
+        <input type="radio" name="mood" id="m2" value="Cukup paham">
+        <label for="m2">
+          <div class="refleksi-emoji">🙂</div>
+          <div class="refleksi-label">Cukup Paham</div>
+        </label>
+      </div>
+      <div class="refleksi-card r3">
+        <input type="radio" name="mood" id="m3" value="Sangat paham">
+        <label for="m3">
+          <div class="refleksi-emoji">🤩</div>
+          <div class="refleksi-label">Sangat Paham!</div>
+        </label>
+      </div>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">12</div>
+        <div class="soal-question">Apa hal paling penting yang dipelajari kelompokmu hari ini? Apakah pelajaran ini mengubah cara pandang kalian terhadap lingkungan dan pohon-pohon di sekitar?</div>
+      </div>
+      <textarea class="jawaban" id="ref1" style="min-height:100px" placeholder="Tulis refleksi kelompok dengan jujur..."></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">13</div>
+        <div class="soal-question">Hal apa yang masih ingin kelompokmu tanyakan atau pelajari lebih lanjut tentang longsor, reboisasi, atau makhluk hidup di hutan?</div>
+      </div>
+      <textarea class="jawaban" id="ref2" placeholder="Pertanyaan atau rasa ingin tahu kelompok kami..."></textarea>
+    </div>
+
+    <div class="soal-item">
+      <div class="soal-label">
+        <div class="soal-num">14</div>
+        <div class="soal-question">Bagaimana kerja sama kelompokmu selama mengerjakan LKPD ini? Ceritakan hal yang berjalan baik dan hal yang perlu diperbaiki untuk kerja kelompok selanjutnya!</div>
+      </div>
+      <textarea class="jawaban" id="ref3" placeholder="Yang berjalan baik: ...&#10;Yang perlu diperbaiki: ..."></textarea>
+    </div>
+
+    <p style="font-weight:700; margin: 16px 0 8px;">Beri penilaian untuk LKPD ini:</p>
+    <div class="star-rating" id="stars">
+      <span data-val="1">★</span>
+      <span data-val="2">★</span>
+      <span data-val="3">★</span>
+      <span data-val="4">★</span>
+      <span data-val="5">★</span>
+    </div>
+    <input type="hidden" id="rating" value="0">
+  </div>
+
+  <!-- TOMBOL AKSI -->
+  <div class="btn-group">
+    <button class="btn btn-simpan" onclick="simpanData()">💾 Simpan Jawaban</button>
+    <button class="btn btn-pdf" onclick="downloadPDF()">📄 Download PDF</button>
+    <button class="btn btn-reset" onclick="resetForm()">🔄 Reset</button>
+  </div>
+
+</div>
+
+<footer>
+  <p>🌿 <strong>LKPD IPA – Ekologi &amp; Keanekaragaman Hayati</strong> | SMP/MTs Kelas VII | Versi Kelompok</p>
+  <p style="margin-top:6px">Dibuat untuk mendukung kesadaran lingkungan peserta didik Indonesia 🇮🇧</p>
+</footer>
+
+<div class="toast" id="toast">✅ Data berhasil disimpan!</div>
+
+<script>
+// ===== DAFTAR OPSI PERAN =====
+const PERAN_OPTIONS = [
+  'Ketua Kelompok',
+  'Penulis / Sekretaris',
+  'Notulen Diskusi',
+  'Presentator',
+  'Peneliti / Pencari Fakta',
+  'Pengelola Waktu',
+];
+
+const BAGIAN_OPTIONS = [
+  'Bagian A – Mengamati Video',
+  'Bagian B – Analisis Ekologi',
+  'Bagian C – Solusi Reboisasi',
+  'Bagian D – Aksi & Komitmen',
+  'Tabel Dampak Ekosistem',
+  'Refleksi Kelompok',
+  'Semua Bagian (Koordinator)',
+];
+
+// ===== RENDER TABEL ANGGOTA =====
+function updateAnggota() {
+  const n = parseInt(document.getElementById('jumlahAnggota').value);
+  const tbody = document.getElementById('bodyAnggota');
+  tbody.innerHTML = '';
+  for (let i = 1; i <= n; i++) {
+    const isKetua = i === 1;
+    tbody.innerHTML += `
+      <tr>
+        <td style="text-align:center;"><div class="no-anggota">${i}</div></td>
+        <td>
+          <input type="text" id="ang_nama_${i}" placeholder="Nama anggota ke-${i}${isKetua?' (Ketua)':''}"
+            oninput="syncNamaToSelects()">
+        </td>
+        <td>
+          <select id="ang_peran_${i}">
+            ${isKetua ? `<option value="Ketua Kelompok" selected>Ketua Kelompok ★</option>` : ''}
+            ${PERAN_OPTIONS.filter(p => isKetua ? false : true).map(p =>
+              `<option value="${p}">${p}</option>`
+            ).join('')}
+          </select>
+        </td>
+        <td>
+          <select id="ang_bagian_${i}">
+            ${BAGIAN_OPTIONS.map((b,idx) => {
+              const sel = (i-1 < BAGIAN_OPTIONS.length && idx === i-1) ? 'selected' : '';
+              return `<option value="${b}" ${sel}>${b}</option>`;
+            }).join('')}
+          </select>
+        </td>
+      </tr>`;
+  }
+  renderTugasGrid(n);
+  syncNamaToSelects();
+}
+
+// ===== RENDER KARTU TUGAS DETAIL =====
+const TUGAS_ICONS = ['🔍','📊','🌱','💡','🤝'];
+const TUGAS_JUDUL = [
+  'Pengamat Video',
+  'Analis Ekologi',
+  'Ahli Reboisasi',
+  'Pencatat Tabel',
+  'Koordinator Refleksi',
+];
+
+function renderTugasGrid(n) {
+  const grid = document.getElementById('tugasGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= n; i++) {
+    grid.innerHTML += `
+      <div class="tugas-card">
+        <h4>${TUGAS_ICONS[(i-1)%5]} Anggota ${i} <span id="tg_nama_ref_${i}" class="anggota-nama-ref"></span></h4>
+        <label>Tugas Utama yang Dikerjakan</label>
+        <textarea id="tg_tugas_${i}" rows="3" placeholder="Ceritakan tugas spesifik anggota ${i}..."></textarea>
+        <label>Kontribusi dalam Diskusi</label>
+        <input type="text" id="tg_kontribusi_${i}" placeholder="Contoh: menyampaikan 2 argumen tentang reboisasi">
+      </div>`;
+  }
+}
+
+// ===== SINKRON NAMA KE SEMUA SELECT PJ & TUGAS GRID =====
+function syncNamaToSelects() {
+  const n = parseInt(document.getElementById('jumlahAnggota').value);
+  const names = [];
+  for (let i = 1; i <= n; i++) {
+    const el = document.getElementById('ang_nama_'+i);
+    names.push(el ? (el.value.trim() || 'Anggota ' + i) : 'Anggota ' + i);
+  }
+
+  // Update referensi nama di tugas grid
+  for (let i = 1; i <= n; i++) {
+    const ref = document.getElementById('tg_nama_ref_'+i);
+    if (ref) ref.textContent = '— ' + names[i-1];
+  }
+
+  // Update semua select PJ
+  const selects = document.querySelectorAll('.pj-select');
+  selects.forEach(sel => {
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Pilih anggota</option>';
+    names.forEach(nm => {
+      sel.innerHTML += `<option value="${nm}" ${cur===nm?'selected':''}>${nm}</option>`;
+    });
+  });
+}
+
+// ===== STAR RATING =====
+const stars = document.querySelectorAll('#stars span');
+const ratingInput = document.getElementById('rating');
+stars.forEach(star => {
+  star.addEventListener('click', function() {
+    const val = parseInt(this.dataset.val);
+    ratingInput.value = val;
+    stars.forEach((s, i) => s.classList.toggle('active', i < val));
+  });
+  star.addEventListener('mouseenter', function() {
+    const val = parseInt(this.dataset.val);
+    stars.forEach((s, i) => { s.style.color = i < val ? '#f9a825' : '#ccc'; });
+  });
+});
+document.getElementById('stars').addEventListener('mouseleave', function() {
+  const val = parseInt(ratingInput.value);
+  stars.forEach((s, i) => { s.style.color = i < val ? '#f9a825' : '#ccc'; });
+});
+
+// ===== SET TANGGAL HARI INI =====
+const tgl = document.getElementById('tanggal');
+if (!tgl.value) {
+  tgl.value = new Date().toISOString().split('T')[0];
+}
+
+// ===== TOAST =====
+function showToast(msg, color='#1a5c2a') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== AMBIL DATA =====
+function getAllData() {
+  const n = parseInt(document.getElementById('jumlahAnggota').value);
+  const anggota = [];
+  for (let i = 1; i <= n; i++) {
+    anggota.push({
+      nama: (document.getElementById('ang_nama_'+i)||{}).value || '',
+      peran: (document.getElementById('ang_peran_'+i)||{}).value || '',
+      bagian: (document.getElementById('ang_bagian_'+i)||{}).value || '',
+      tugas: (document.getElementById('tg_tugas_'+i)||{}).value || '',
+      kontribusi: (document.getElementById('tg_kontribusi_'+i)||{}).value || '',
+    });
+  }
+  const cek = id => (document.getElementById(id)||{}).checked || false;
+  const val = id => (document.getElementById(id)||{}).value || '';
+  const prog = [];
+  for (let i=1;i<=8;i++) prog.push(cek('prog'+i));
+  const aksi = [];
+  for (let i=1;i<=8;i++) { const el=document.getElementById('ak'+i); if(el&&el.checked) aksi.push(el.nextElementSibling.textContent.trim()); }
+  const mood = document.querySelector('input[name="mood"]:checked');
+  const getPJ = id => (document.getElementById(id)||{}).value || '';
+  return {
+    namaKelompok: val('namaKelompok'), kelas: val('kelas'), guru: val('guru'),
+    sekolah: val('sekolah'), tanggal: val('tanggal'),
+    jumlahAnggota: n, anggota,
+    prog,
+    pj: {
+      a1: getPJ('pj_a1'), a2: getPJ('pj_a2'), a3: getPJ('pj_a3'),
+      b1: getPJ('pj_b1'), b2: getPJ('pj_b2'), tabel: getPJ('pj_tabel'),
+      c1: getPJ('pj_c1'), c2: getPJ('pj_c2'), c3: getPJ('pj_c3'), c4: getPJ('pj_c4'),
+    },
+    a1: val('a1'), a2: val('a2'), a3: val('a3'),
+    t1a:val('t1a'),t1b:val('t1b'),t1c:val('t1c'),
+    t2a:val('t2a'),t2b:val('t2b'),t2c:val('t2c'),
+    t3a:val('t3a'),t3b:val('t3b'),t3c:val('t3c'),
+    t4a:val('t4a'),t4b:val('t4b'),t4c:val('t4c'),
+    t5a:val('t5a'),t5b:val('t5b'),t5c:val('t5c'),
+    b1: val('b1'), b2: val('b2'),
+    c1: val('c1'), c2: val('c2'), c3: val('c3'), c4: val('c4'),
+    d1: val('d1'), aksi,
+    mood: mood ? mood.value : '-',
+    rating: val('rating'),
+    ref1: val('ref1'), ref2: val('ref2'), ref3: val('ref3'),
+  };
+}
+
+// ===== SIMPAN =====
+function simpanData() {
+  const data = getAllData();
+  localStorage.setItem('lkpd_longsor_kelompok', JSON.stringify(data));
+  showToast('✅ Jawaban berhasil disimpan!');
+}
+
+// ===== LOAD =====
+function loadData() {
+  const saved = localStorage.getItem('lkpd_longsor_kelompok');
+  if (!saved) return;
+  try {
+    const d = JSON.parse(saved);
+    const set = (id, val) => { const el=document.getElementById(id); if(el&&val!=null) el.value=val; };
+    set('namaKelompok',d.namaKelompok); set('kelas',d.kelas);
+    set('guru',d.guru); set('sekolah',d.sekolah); set('tanggal',d.tanggal);
+    if (d.jumlahAnggota) {
+      set('jumlahAnggota', d.jumlahAnggota);
+      updateAnggota();
+    }
+    if (d.anggota) {
+      d.anggota.forEach((a,i) => {
+        const idx = i+1;
+        set('ang_nama_'+idx, a.nama);
+        set('ang_peran_'+idx, a.peran);
+        set('ang_bagian_'+idx, a.bagian);
+        set('tg_tugas_'+idx, a.tugas);
+        set('tg_kontribusi_'+idx, a.kontribusi);
+      });
+      syncNamaToSelects();
+    }
+    if (d.pj) {
+      Object.entries(d.pj).forEach(([k,v]) => set('pj_'+k, v));
+    }
+    if (d.prog) {
+      d.prog.forEach((v,i) => { const el=document.getElementById('prog'+(i+1)); if(el) el.checked=v; });
+    }
+    ['a1','a2','a3','b1','b2','c1','c2','c3','c4','d1','ref1','ref2','ref3'].forEach(k => set(k, d[k]));
+    ['t1a','t1b','t1c','t2a','t2b','t2c','t3a','t3b','t3c','t4a','t4b','t4c','t5a','t5b','t5c'].forEach(k => set(k, d[k]));
+    if (d.rating && parseInt(d.rating)>0) {
+      set('rating', d.rating);
+      stars.forEach((s,i) => s.classList.toggle('active', i<parseInt(d.rating)));
+    }
+    if (d.mood && d.mood!=='-') {
+      document.querySelectorAll('input[name="mood"]').forEach(r => { if(r.value===d.mood) r.checked=true; });
+    }
+    const aksiLabel = [
+      'Menanam minimal 1 pohon di sekitar rumah atau sekolah',
+      'Tidak membuang sampah sembarangan, terutama di lereng/sungai',
+      'Membuat lubang biopori di pekarangan untuk menyerap air hujan',
+      'Mengajak keluarga dan teman untuk ikut menjaga lingkungan',
+      'Merawat tanaman yang ada di rumah atau lingkungan sekitar',
+      'Membagikan informasi tentang pentingnya reboisasi di media sosial',
+      'Tidak menebang pohon sembarangan di hutan atau lereng',
+      'Bergabung dalam kegiatan kelompok peduli lingkungan di sekolah',
+    ];
+    if (d.aksi) {
+      for (let i=1;i<=8;i++) {
+        const el=document.getElementById('ak'+i);
+        if(el){ const lbl=el.nextElementSibling.textContent.trim(); if(d.aksi.includes(lbl)) el.checked=true; }
+      }
+    }
+  } catch(e) { console.log('Gagal memuat data'); }
+}
+
+// ===== RESET =====
+function resetForm() {
+  if (!confirm('Yakin ingin menghapus semua jawaban kelompok? Data tidak dapat dikembalikan.')) return;
+  localStorage.removeItem('lkpd_longsor_kelompok');
+  location.reload();
+}
+
+// ===== BERSIHKAN TEKS =====
+function bersihkanTeks(str) {
+  if (!str) return '';
+  return str
+    .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')
+    .replace(/[\u{2600}-\u{27BF}]/gu, '')
+    .replace(/[\u{2B00}-\u{2BFF}]/gu, '')
+    .replace(/[\u{FE00}-\u{FEFF}]/gu, '')
+    .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
+    .replace(/[^\x00-\x7F\u00C0-\u024F]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+// ===== DOWNLOAD PDF =====
+function downloadPDF() {
+  const d = getAllData();
+  if (!d.namaKelompok) { showToast('Isi nama kelompok dulu ya!', '#c62828'); return; }
+  showToast('Membuat PDF, mohon tunggu...', '#283593');
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, M = 15, cw = W - M*2;
+  let y = 15;
+
+  const addPage = () => { doc.addPage(); y = 15; };
+  const checkPage = (need=20) => { if (y + need > 285) addPage(); };
+
+  // Header
+  doc.setFillColor(26, 92, 42);
+  doc.rect(0, 0, 210, 44, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('LKPD KERJA KELOMPOK - BENCANA LONGSOR', W/2, 12, {align:'center'});
+  doc.text('EKOLOGI & KEANEKARAGAMAN HAYATI', W/2, 20, {align:'center'});
+  doc.setFontSize(8.5); doc.setFont('helvetica','normal');
+  doc.text('Mata Pelajaran IPA  |  SMP/MTs Kelas VII', W/2, 28, {align:'center'});
+  doc.text('Video: https://youtu.be/r_kNx6eM9r4', W/2, 35, {align:'center'});
+  y = 52;
+
+  // Identitas Kelompok
+  doc.setTextColor(26,92,42); doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text('IDENTITAS KELOMPOK', M, y); y += 5;
+  doc.setDrawColor(26,92,42); doc.setLineWidth(0.5); doc.line(M, y, W-M, y); y += 5;
+  doc.setTextColor(40,40,40); doc.setFontSize(9); doc.setFont('helvetica','normal');
+  [['Nama Kelompok', d.namaKelompok], ['Kelas / Rombel', d.kelas],
+   ['Tanggal', d.tanggal], ['Nama Guru', d.guru], ['Sekolah', d.sekolah]].forEach(([k,v]) => {
+    doc.text(k + '  :  ' + (v||'-'), M, y); y += 5.5;
+  });
+  y += 3;
+
+  // Daftar Anggota
+  doc.setFillColor(100, 50, 130);
+  doc.rect(M, y, cw, 8, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('DAFTAR ANGGOTA & PEMBAGIAN TUGAS', M+3, y+5.5);
+  y += 10;
+
+  const acols = [12, 52, 45, 61];
+  const aheads = ['No', 'Nama Anggota', 'Peran', 'Bagian Tugas'];
+  doc.setFillColor(70, 30, 100);
+  doc.rect(M, y, cw, 7, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  let cx2 = M;
+  aheads.forEach((h,i) => { doc.text(h, cx2+2, y+5); cx2+=acols[i]; });
+  y += 7;
+
+  d.anggota.forEach((a, ri) => {
+    const rowLines = [
+      doc.splitTextToSize(String(ri+1), acols[0]-4),
+      doc.splitTextToSize(bersihkanTeks(a.nama)||'-', acols[1]-4),
+      doc.splitTextToSize(bersihkanTeks(a.peran)||'-', acols[2]-4),
+      doc.splitTextToSize(bersihkanTeks(a.bagian)||'-', acols[3]-4),
+    ];
+    const maxL = Math.max(...rowLines.map(l=>l.length));
+    const rowH = Math.max(maxL*4+5, 10);
+    checkPage(rowH+2);
+    doc.setFillColor(ri%2===0?240:255, ri%2===0?230:255, ri%2===0?248:255);
+    doc.setDrawColor(180,150,200); doc.setLineWidth(0.2);
+    doc.rect(M, y, cw, rowH, 'FD');
+    cx2 = M;
+    rowLines.forEach((ls,ci) => {
+      doc.setTextColor(40,40,40); doc.setFontSize(7.5);
+      doc.setFont('helvetica', ci===0?'bold':'normal');
+      doc.text(ls, cx2+2, y+4);
+      cx2+=acols[ci];
+      if(ci<3) { doc.setDrawColor(180,150,200); doc.line(cx2,y,cx2,y+rowH); }
+    });
+    y+=rowH;
+  });
+  y += 6;
+
+  // Rincian tugas
+  checkPage(30);
+  doc.setFillColor(100, 50, 130);
+  doc.rect(M, y, cw, 7, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('RINCIAN TUGAS & KONTRIBUSI ANGGOTA', M+3, y+5);
+  y += 9;
+
+  d.anggota.forEach((a,i) => {
+    checkPage(22);
+    doc.setFillColor(248,240,255);
+    doc.setDrawColor(180,150,200); doc.setLineWidth(0.3);
+    const tugasTxt = bersihkanTeks(a.tugas)||'(belum diisi)';
+    const kontrTxt = bersihkanTeks(a.kontribusi)||'(belum diisi)';
+    const tLines = doc.splitTextToSize(tugasTxt, cw-10);
+    const kLines = doc.splitTextToSize(kontrTxt, cw-10);
+    const boxH = (tLines.length + kLines.length)*4.3 + 18;
+    doc.roundedRect(M, y, cw, boxH, 2, 2, 'FD');
+    doc.setTextColor(70,30,100); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.text('Anggota ' + (i+1) + ' - ' + (bersihkanTeks(a.nama)||'?'), M+4, y+5);
+    doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+    doc.text('Tugas: ', M+4, y+10);
+    doc.text(tLines, M+4, y+14);
+    doc.text('Kontribusi: ', M+4, y+14+tLines.length*4.3+2);
+    doc.text(kLines, M+4, y+14+tLines.length*4.3+6);
+    y += boxH + 4;
+  });
+  y += 4;
+
+  const section = (title, color=[26,92,42]) => {
+    checkPage(14);
+    doc.setFillColor(...color);
+    doc.rect(M, y, cw, 8, 'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(9.5); doc.setFont('helvetica','bold');
+    doc.text(title, M+3, y+5.5);
+    y += 12; doc.setTextColor(40,40,40);
+  };
+
+  const writeQA = (num, q, ans, pj='') => {
+    checkPage(28);
+    doc.setTextColor(26,92,42); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    const qFull = num + '. ' + q + (pj ? ' [PJ: '+bersihkanTeks(pj)+']' : '');
+    const qLines = doc.splitTextToSize(qFull, cw);
+    doc.text(qLines, M, y);
+    y += qLines.length * 4.8 + 1;
+    doc.setTextColor(40,40,40); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+    const clean = bersihkanTeks(ans) || '(belum diisi)';
+    const aLines = doc.splitTextToSize(clean, cw - 6);
+    const boxH = Math.max(aLines.length * 4.4 + 6, 14);
+    checkPage(boxH + 4);
+    doc.setFillColor(245,250,245); doc.setDrawColor(180,210,180); doc.setLineWidth(0.3);
+    doc.roundedRect(M, y, cw, boxH, 2, 2, 'FD');
+    doc.text(aLines, M+3, y+5);
+    y += boxH + 6;
+  };
+
+  section('A. MENGAMATI DAN MEMAHAMI VIDEO');
+  writeQA(1, 'Kondisi lingkungan sebelum dan sesudah longsor:', d.a1, d.pj.a1);
+  writeQA(2, 'Penyebab longsor yang terlihat dalam video (min. 3):', d.a2, d.pj.a2);
+  writeQA(3, 'Makhluk hidup yang terkena dampak longsor dan pengaruhnya:', d.a3, d.pj.a3);
+
+  section('B. ANALISIS EKOLOGI DAN KEANEKARAGAMAN HAYATI', [40,80,100]);
+  writeQA(4, 'Peran pohon dan tumbuhan dalam mencegah longsor:', d.b1, d.pj.b1);
+  writeQA(5, 'Mengapa hutan beragam lebih kuat dari lahan monokultur:', d.b2, d.pj.b2);
+
+  // Tabel
+  checkPage(70);
+  section('TABEL: DAMPAK LONGSOR TERHADAP EKOSISTEM [PJ: ' + bersihkanTeks(d.pj.tabel||'-') + ']', [80,50,20]);
+  const cols = [38,43,43,46];
+  const heads = ['Komponen','Sebelum Longsor','Dampak Setelah Longsor','Cara Pemulihan'];
+  const tRows = [
+    ['Tanah',d.t1a,d.t1b,d.t1c],
+    ['Air / Sumber Air',d.t2a,d.t2b,d.t2c],
+    ['Tumbuhan',d.t3a,d.t3b,d.t3c],
+    ['Hewan / Satwa',d.t4a,d.t4b,d.t4c],
+    ['Manusia',d.t5a,d.t5b,d.t5c],
+  ];
+  doc.setFillColor(26,92,42);
+  doc.rect(M, y, cw, 7, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+  let cx = M;
+  heads.forEach((h,i) => { doc.text(h, cx+2, y+5); cx+=cols[i]; });
+  y += 7;
+  tRows.forEach((row, ri) => {
+    let maxH = 8;
+    const cellLines = row.map((cell,ci) => {
+      const ls = doc.splitTextToSize(bersihkanTeks(cell)||'-', cols[ci]-4);
+      const h = ls.length*3.8+5; if(h>maxH) maxH=h;
+      return ls;
+    });
+    checkPage(maxH+2);
+    doc.setFillColor(ri%2===0?241:255,ri%2===0?248:255,ri%2===0?233:255);
+    doc.setDrawColor(190,215,190); doc.setLineWidth(0.2);
+    doc.rect(M, y, cw, maxH, 'FD');
+    cx = M;
+    cellLines.forEach((ls,ci) => {
+      doc.setTextColor(40,40,40); doc.setFontSize(7);
+      doc.setFont('helvetica',ci===0?'bold':'normal');
+      doc.text(ls, cx+2, y+4.5);
+      cx+=cols[ci];
+      if(ci<3) doc.line(cx, y, cx, y+maxH);
+    });
+    y += maxH;
+  });
+  y += 7;
+
+  section('C. SOLUSI: REBOISASI DAN PELESTARIAN LINGKUNGAN', [26,92,42]);
+  writeQA(7,'Pengertian dan manfaat reboisasi:',d.c1,d.pj.c1);
+  writeQA(8,'Tindakan nyata mencegah longsor (min. 5):',d.c2,d.pj.c2);
+  writeQA(9,'Pohon asli daerah vs pohon dari luar — pilihan kelompok:',d.c3,d.pj.c3);
+  writeQA(10,'Slogan ajakan menanam pohon dari kelompok:',d.c4,d.pj.c4);
+
+  section('D. AKSI NYATA DAN KOMITMEN KELOMPOK', [40,50,130]);
+  checkPage(20);
+  doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(40,40,40);
+  doc.text('Aksi nyata yang dipilih kelompok:', M, y); y += 5;
+  doc.setFont('helvetica','normal');
+  const aksiDipilih = [];
+  for(let i=1;i<=8;i++){const el=document.getElementById('ak'+i);if(el&&el.checked)aksiDipilih.push(el.nextElementSibling.textContent.trim());}
+  if(aksiDipilih.length){
+    aksiDipilih.forEach((a,idx)=>{
+      const txt = (idx+1)+'. '+bersihkanTeks(a);
+      const ls = doc.splitTextToSize(txt,cw-6);
+      checkPage(8); doc.text(ls,M+3,y); y+=ls.length*4.5+1;
+    });
+  } else { doc.text('(tidak ada yang dipilih)',M+3,y); y+=5; }
+  y+=3;
+  writeQA(11,'Komitmen kelompok untuk menjaga lingkungan:',d.d1);
+
+  section('REFLEKSI BELAJAR KELOMPOK',[109,76,65]);
+  checkPage(24);
+  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(40,40,40);
+  doc.text('Perasaan kelompok setelah belajar : '+(bersihkanTeks(d.mood)||'-'),M,y); y+=5.5;
+  doc.text('Rating LKPD : '+(parseInt(d.rating)||0)+' / 5 bintang',M,y); y+=6;
+  writeQA(12,'Hal paling penting yang dipelajari kelompok hari ini:',d.ref1);
+  writeQA(13,'Pertanyaan yang masih ingin dipelajari lebih lanjut:',d.ref2);
+  writeQA(14,'Evaluasi kerja sama kelompok (yang baik & yang perlu diperbaiki):',d.ref3);
+
+  const pgCount = doc.internal.getNumberOfPages();
+  for(let i=1;i<=pgCount;i++){
+    doc.setPage(i);
+    doc.setFontSize(7); doc.setTextColor(160,160,160); doc.setFont('helvetica','normal');
+    doc.text(
+      'LKPD IPA Kelompok - '+bersihkanTeks(d.namaKelompok||'?')+' | '+bersihkanTeks(d.kelas||'?')+' | Halaman '+i+' / '+pgCount,
+      W/2, 292, {align:'center'}
+    );
+  }
+
+  const fn='LKPD_Kelompok_'+(d.namaKelompok||'kelompok').replace(/\s+/g,'_')+'.pdf';
+  doc.save(fn);
+  showToast('PDF berhasil diunduh!','#2e7d32');
+}
+
+// ===== VIDEO =====
+function bukaTonton() { window.open('https://www.youtube.com/watch?v=r_kNx6eM9r4','_blank'); }
+function cobaEmbed() {
+  document.getElementById('videoThumb').style.display='none';
+  document.getElementById('videoEmbed').style.display='block';
+  document.getElementById('ytFrame').src='https://www.youtube.com/embed/r_kNx6eM9r4?autoplay=1&rel=0&modestbranding=1';
+}
+
+// ===== INIT =====
+window.addEventListener('load', () => {
+  updateAnggota();
+  loadData();
+});
+setInterval(simpanData, 60000);
+</script>
 </body>
 </html>
