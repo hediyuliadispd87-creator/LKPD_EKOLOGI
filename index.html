@@ -686,12 +686,29 @@
                         <li>Merancang rencana aksi nyata untuk pelestarian lingkungan</li>
                     </ul>
                 </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn-success" onclick="downloadPDF('info')">📥 Download Halaman Ini (PDF)</button>
+                    <button class="btn-primary" onclick="downloadAllPDF()">📥 Download Semua Halaman (PDF)</button>
+                </div>
             </section>
 
             <!-- TAB 2: VIDEO & PEMAHAMAN -->
             <section id="video" class="section">
                 <h2>🎬 Pemahaman Video: Bencana Longsor</h2>
                 <p class="section-subtitle">Analisis tayangan video tentang bencana longsor</p>
+
+                <div style="margin: 30px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <iframe width="100%" height="450" src="https://www.youtube.com/embed/r_kNx6eM9r4" title="Bencana Longsor" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <div class="alert alert-info" style="margin-top: 20px;">
+                    <strong>👀 Instruksi:</strong> Tonton video di atas dengan seksama, perhatikan penyebab, dampak, dan cara mencegah bencana longsor. Kemudian jawab semua pertanyaan di bawah.
+                </div>
+
+                <div class="button-group" style="margin: 20px 0;">
+                    <button class="btn-success" onclick="downloadPDF('video')">📥 Download Halaman Ini (PDF)</button>
+                </div>
 
                 <div class="question-block">
                     <h3><span class="question-number">1</span> Pengalaman Menonton</h3>
@@ -784,6 +801,10 @@
                 <div class="alert alert-success">
                     <strong>✓ Penting:</strong> Setiap komponen ekosistem memiliki peran penting dalam menjaga keseimbangan alam dan mencegah bencana alam seperti longsor.
                 </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn-success" onclick="downloadPDF('ekologi')">📥 Download Halaman Ini (PDF)</button>
+                </div>
             </section>
 
             <!-- TAB 4: REBOISASI -->
@@ -858,6 +879,10 @@
 
                 <div class="alert alert-warning">
                     <strong>⚠️ Catatan:</strong> Pilih jenis pohon yang sesuai dengan iklim dan kondisi tanah lokal Anda untuk hasil reboisasi yang optimal.
+                </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn-success" onclick="downloadPDF('reboisasi')">📥 Download Halaman Ini (PDF)</button>
                 </div>
             </section>
 
@@ -941,6 +966,10 @@
                 <div class="question-block">
                     <h3>Rencana Pelaksanaan</h3>
                     <textarea class="answer-box" placeholder="Kapan, di mana, dan bagaimana pelaksanaannya..." rows="5"></textarea>
+                </div>
+
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn-success" onclick="downloadPDF('aksi')">📥 Download Halaman Ini (PDF)</button>
                 </div>
             </section>
 
@@ -1042,6 +1071,8 @@
 
                 <div class="button-group" style="margin-top: 30px;">
                     <button class="btn-success" onclick="simpanData()">💾 Simpan Jawaban Saya</button>
+                    <button class="btn-success" onclick="downloadPDF('evaluasi')">📥 Download Halaman Ini (PDF)</button>
+                    <button class="btn-primary" onclick="downloadAllPDF()">📥 Download Semua Halaman (PDF)</button>
                     <button class="btn-primary" onclick="cetakLKPD()">🖨️ Cetak LKPD</button>
                     <button class="btn-secondary" onclick="resetForm()">↻ Ulang Pengisian</button>
                 </div>
@@ -1056,6 +1087,7 @@
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         // TAB NAVIGATION
         const tabButtons = document.querySelectorAll('.tab-button');
@@ -1103,6 +1135,52 @@
             // Save to localStorage
             localStorage.setItem('lkpdData_' + nama + '_' + new Date().getTime(), JSON.stringify(data));
             alert('✓ Jawaban Anda telah disimpan!\n\nNama: ' + nama + '\nKelas: ' + kelas);
+        }
+
+        // DOWNLOAD PDF PER HALAMAN
+        function downloadPDF(tabName) {
+            const nama = document.getElementById('nama').value;
+            if (!nama) {
+                alert('Silakan isi nama Anda terlebih dahulu!');
+                return;
+            }
+
+            const element = document.getElementById(tabName);
+            const opt = {
+                margin: 10,
+                filename: `LKPD_${tabName}_${nama}_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // DOWNLOAD PDF SEMUA HALAMAN
+        function downloadAllPDF() {
+            const nama = document.getElementById('nama').value;
+            if (!nama) {
+                alert('Silakan isi nama Anda terlebih dahulu!');
+                return;
+            }
+
+            const header = document.querySelector('header').cloneNode(true);
+            const content = document.querySelector('.content').cloneNode(true);
+            
+            const container = document.createElement('div');
+            container.appendChild(header);
+            container.appendChild(content);
+
+            const opt = {
+                margin: 10,
+                filename: `LKPD_Lengkap_${nama}_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(container).save();
         }
 
         // CETAK
